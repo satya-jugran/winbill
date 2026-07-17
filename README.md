@@ -10,8 +10,8 @@ Effortlessly generate professional, beautiful PDF invoices and receipts for your
     <td align="center"><b>Receipt Mode (Paid)</b></td>
   </tr>
   <tr>
-    <td><img src="./assets/invoice.png" alt="Invoice Preview" width="100%" /></td>
-    <td><img src="./assets/receipt.png" alt="Receipt Preview" width="100%" /></td>
+    <td><img src="https://unpkg.com/winbill@latest/assets/invoice.png" alt="Invoice Preview" width="100%" /></td>
+    <td><img src="https://unpkg.com/winbill@latest/assets/receipt.png" alt="Receipt Preview" width="100%" /></td>
   </tr>
 </table>
 
