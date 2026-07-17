@@ -1,5 +1,6 @@
 src/
 test/
+.demo-out/
 tsconfig.json
 implementation_plan.md
 task.md
