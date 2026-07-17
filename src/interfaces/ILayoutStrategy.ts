@@ -1,9 +1,8 @@
 import { InvoiceData } from "../models/types";
 
-// Note: Using `any` for PDFKit document here to avoid importing the whole pdfkit type in the interface if possible,
-// but we will import it properly for type safety.
-import PDFDocument from "pdfkit";
+// Note: Using type-only import for PDFKit document here for proper typing
+import type PDFDocument from "pdfkit";
 
 export interface ILayoutStrategy {
-  draw(doc: typeof PDFDocument, data: InvoiceData): void;
+  draw(doc: PDFKit.PDFDocument, data: InvoiceData): void;
 }

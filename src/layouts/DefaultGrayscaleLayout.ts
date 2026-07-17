@@ -2,11 +2,12 @@ import { injectable } from "inversify";
 import { ILayoutStrategy } from "../interfaces/ILayoutStrategy";
 import { InvoiceData } from "../models/types";
 import * as fs from "fs";
+import type PDFDocument from "pdfkit";
 
 @injectable()
 export class DefaultGrayscaleLayout implements ILayoutStrategy {
   
-  public draw(doc: any, data: InvoiceData): void {
+  public draw(doc: PDFKit.PDFDocument, data: InvoiceData): void {
     const startX = 50;
     let currentY = 50;
 
@@ -128,7 +129,7 @@ export class DefaultGrayscaleLayout implements ILayoutStrategy {
     }
   }
 
-  private generateTableRow(doc: any, y: number, item: string, qty: string, unit: string, total: string, colDesc: number, colQty: number, colUnit: number, colTotal: number) {
+  private generateTableRow(doc: PDFKit.PDFDocument, y: number, item: string, qty: string, unit: string, total: string, colDesc: number, colQty: number, colUnit: number, colTotal: number) {
     doc.fontSize(10).fillColor("#333333")
        .text(item, colDesc, y, { width: 200 })
        .text(qty, colQty, y, { width: 50, align: "right" })
@@ -136,7 +137,7 @@ export class DefaultGrayscaleLayout implements ILayoutStrategy {
        .text(total, colTotal, y, { width: 80, align: "right" });
   }
 
-  private generateHr(doc: any, y: number) {
+  private generateHr(doc: PDFKit.PDFDocument, y: number) {
     doc.strokeColor("#cccccc")
        .lineWidth(1)
        .moveTo(50, y)
