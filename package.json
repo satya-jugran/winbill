@@ -1,6 +1,6 @@
 {
   "name": "winbill",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Effortlessly generate professional, beautiful PDF invoices and receipts for your Node.js applications.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,8 +11,13 @@
     "demo": "tsc test/demo.ts --ignoreConfig --skipLibCheck --esModuleInterop --experimentalDecorators --emitDecoratorMetadata --module commonjs --outDir .demo-out && node .demo-out/test/demo.js"
   },
   "keywords": ["invoice", "pdf", "pdfkit", "generator", "receipt"],
-  "author": "",
-  "license": "ISC",
+  "author": "Satya Jugran",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satya-jugran/winbill.git"
+  },
+  "funding": "https://ko-fi.com/satyajugran",
   "type": "commonjs",
   "dependencies": {
     "inversify": "^8.2.1",
