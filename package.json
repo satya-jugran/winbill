@@ -1,0 +1,28 @@
+{
+  "name": "winbill",
+  "version": "1.0.0",
+  "description": "Effortlessly generate professional, beautiful PDF invoices and receipts for your Node.js applications.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo": "tsc test/demo.ts --ignoreConfig --skipLibCheck --esModuleInterop --experimentalDecorators --emitDecoratorMetadata --module commonjs && node test/demo.js"
+  },
+  "keywords": ["invoice", "pdf", "pdfkit", "generator", "receipt"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "inversify": "^8.2.1",
+    "pdfkit": "^0.19.1",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/pdfkit": "^0.17.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
+  }
+}
