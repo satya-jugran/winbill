@@ -32,8 +32,8 @@ async function run() {
     ]
   };
 
-  const invoicePath = path.join(__dirname, "demo-invoice.pdf");
-  const receiptPath = path.join(__dirname, "demo-receipt.pdf");
+  const invoicePath = path.join(process.cwd(), "test", "demo-invoice.pdf");
+  const receiptPath = path.join(process.cwd(), "test", "demo-receipt.pdf");
 
   console.log(`Generating invoice with number: ${generatedInvoiceNumber}`);
   try {

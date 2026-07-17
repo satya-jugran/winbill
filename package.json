@@ -8,7 +8,7 @@
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "demo": "tsc test/demo.ts --ignoreConfig --skipLibCheck --esModuleInterop --experimentalDecorators --emitDecoratorMetadata --module commonjs && node test/demo.js"
+    "demo": "tsc test/demo.ts --ignoreConfig --skipLibCheck --esModuleInterop --experimentalDecorators --emitDecoratorMetadata --module commonjs --outDir .demo-out && node .demo-out/test/demo.js"
   },
   "keywords": ["invoice", "pdf", "pdfkit", "generator", "receipt"],
   "author": "",
