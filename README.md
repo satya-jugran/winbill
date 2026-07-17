@@ -2,8 +2,6 @@
 
 Effortlessly generate professional, beautiful PDF invoices and receipts for your Node.js applications.
 
-`winbill` is a strictly typed, OOP-based Node.js utility built on top of PDFKit and Inversify. It allows you to dynamically generate beautiful financial documents with minimal setup.
-
 ## Previews
 
 <table>
