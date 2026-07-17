@@ -63,6 +63,16 @@ let InvoiceGenerator = class InvoiceGenerator {
             try {
                 const doc = new pdfkit_1.default({ margin: 50 });
                 const writeStream = fs.createWriteStream(options.filePath);
+                // Attach error and finish handlers immediately to avoid missing events
+                writeStream.on("finish", () => {
+                    resolve();
+                });
+                writeStream.on("error", (error) => {
+                    reject(error);
+                });
+                doc.on("error", (error) => {
+                    reject(error);
+                });
                 doc.pipe(writeStream);
                 // Delegate drawing logic to the layout strategy
                 const strategyToUse = (options.layout && options.layout !== 'default')
@@ -70,12 +80,6 @@ let InvoiceGenerator = class InvoiceGenerator {
                     : this.layoutStrategy;
                 strategyToUse.draw(doc, data);
                 doc.end();
-                writeStream.on("finish", () => {
-                    resolve();
-                });
-                writeStream.on("error", (error) => {
-                    reject(error);
-                });
             }
             catch (error) {
                 reject(error);

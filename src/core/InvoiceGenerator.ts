@@ -16,8 +16,21 @@ export class InvoiceGenerator {
     return new Promise((resolve, reject) => {
       try {
         const doc = new PDFDocument({ margin: 50 });
-        
         const writeStream = fs.createWriteStream(options.filePath);
+        
+        // Attach error and finish handlers immediately to avoid missing events
+        writeStream.on("finish", () => {
+          resolve();
+        });
+        
+        writeStream.on("error", (error) => {
+          reject(error);
+        });
+
+        doc.on("error", (error) => {
+          reject(error);
+        });
+
         doc.pipe(writeStream);
         
         // Delegate drawing logic to the layout strategy
@@ -28,15 +41,6 @@ export class InvoiceGenerator {
         strategyToUse.draw(doc, data);
         
         doc.end();
-        
-        writeStream.on("finish", () => {
-          resolve();
-        });
-        
-        writeStream.on("error", (error) => {
-          reject(error);
-        });
-        
       } catch (error) {
         reject(error);
       }
