@@ -1,6 +1,6 @@
 {
   "name": "winbill",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Effortlessly generate professional, beautiful PDF invoices and receipts for your Node.js applications.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

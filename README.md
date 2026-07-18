@@ -96,6 +96,7 @@ interface InvoiceData {
   currencyType: string;        // Currency symbol (e.g., "$", "€")
   items: InvoiceItem[];        // Array of line items (Description, Qty, Price)
   taxRate: number;             // Tax rate (e.g., 0.15 for 15%)
+  discounts?: InvoiceDiscount[]; // Optional array of stacked discounts
   
   logoPath?: string;           // Optional: Absolute path to a logo image file
   dueDate?: Date;              // Optional: When the invoice is due (hidden if paid)
@@ -116,6 +117,13 @@ interface InvoiceItem {
   description: string;
   quantity: number;
   unitPrice: number;
+}
+
+interface InvoiceDiscount {
+  sequenceNumber?: number;     // Optional: Dictates calculation order (lowest first)
+  isPercent: boolean;          // If true, value is a % (0-100). If false, flat amount
+  value: number;               // The discount amount
+  description: string;         // E.g., "Loyalty Bonus", "Holiday Sale"
 }
 ```
 
