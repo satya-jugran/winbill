@@ -98,7 +98,7 @@ export class DefaultGrayscaleLayout implements ILayoutStrategy {
     const subTotal = data.subTotal ?? subTotalCalculated;
     
     let runningSubtotal = subTotal;
-    const discounts = (data.discounts || []).sort((a, b) => (a.sequenceNumber ?? -1) - (b.sequenceNumber ?? -1));
+    const discounts = [...(data.discounts || [])].sort((a, b) => (a.sequenceNumber ?? -1) - (b.sequenceNumber ?? -1));
     const appliedDiscounts: { amount: number, label: string }[] = [];
     
     discounts.forEach(discount => {
