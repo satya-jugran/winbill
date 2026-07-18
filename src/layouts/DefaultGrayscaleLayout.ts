@@ -96,29 +96,58 @@ export class DefaultGrayscaleLayout implements ILayoutStrategy {
 
     // --- Summary Section ---
     const subTotal = data.subTotal ?? subTotalCalculated;
-    const taxAmount = data.taxAmount ?? (subTotal * data.taxRate);
-    const totalCost = data.totalCost ?? (subTotal + taxAmount);
     
-    const summaryY = itemY + 10;
+    let runningSubtotal = subTotal;
+    const discounts = [...(data.discounts || [])].sort((a, b) => (a.sequenceNumber ?? -1) - (b.sequenceNumber ?? -1));
+    const appliedDiscounts: { amount: number, label: string }[] = [];
+    
+    discounts.forEach(discount => {
+      const amount = discount.isPercent 
+        ? runningSubtotal * (discount.value / 100) 
+        : discount.value;
+        
+      runningSubtotal -= amount;
+      
+      const label = discount.isPercent
+        ? `${discount.description} (${discount.value}%):`
+        : `${discount.description}:`;
+        
+      appliedDiscounts.push({ amount, label });
+    });
+
+    const taxAmount = data.taxAmount ?? (runningSubtotal * data.taxRate);
+    const totalCost = data.totalCost ?? (runningSubtotal + taxAmount);
+    
+    let summaryY = itemY + 10;
     doc.font("Helvetica-Bold");
     doc.text("Subtotal:", 350, summaryY, { align: "left" });
     doc.text(`${data.currencyType}${subTotal.toFixed(2)}`, 450, summaryY, { width: 100, align: "right" });
     
-    doc.text(`Tax (${(data.taxRate * 100).toFixed(0)}%):`, 350, summaryY + 20, { align: "left" });
-    doc.text(`${data.currencyType}${taxAmount.toFixed(2)}`, 450, summaryY + 20, { width: 100, align: "right" });
+    appliedDiscounts.forEach(d => {
+      if (d.amount > 0) {
+        summaryY += 20;
+        doc.text(d.label, 350, summaryY, { align: "left" });
+        doc.text(`-${data.currencyType}${d.amount.toFixed(2)}`, 450, summaryY, { width: 100, align: "right" });
+      }
+    });
+
+    summaryY += 20;
+    doc.text(`Tax (${(data.taxRate * 100).toFixed(0)}%):`, 350, summaryY, { align: "left" });
+    doc.text(`${data.currencyType}${taxAmount.toFixed(2)}`, 450, summaryY, { width: 100, align: "right" });
     
-    this.generateHr(doc, summaryY + 40);
+    this.generateHr(doc, summaryY + 20);
     
     doc.fontSize(14).fillColor("#000000");
-    doc.text("Total:", 350, summaryY + 60, { align: "left" });
-    doc.text(`${data.currencyType}${totalCost.toFixed(2)}`, 450, summaryY + 60, { width: 100, align: "right" });
+    summaryY += 40;
+    doc.text("Total:", 350, summaryY, { align: "left" });
+    doc.text(`${data.currencyType}${totalCost.toFixed(2)}`, 450, summaryY, { width: 100, align: "right" });
     
     // --- Payment Acknowledgement (Receipt Mode) ---
     if (data.paid) {
       const pDate = data.paymentDate ? data.paymentDate.toLocaleDateString() : new Date().toLocaleDateString();
       const pMethod = data.paymentMethod ? ` via ${data.paymentMethod}` : "";
       
-      const receiptStartY = summaryY + 100;
+      const receiptStartY = summaryY + 40;
       
       doc.fontSize(10).fillColor("#4CAF50").font("Helvetica-Bold"); // Green color for payment success
       doc.text("PAID IN FULL", 50, receiptStartY);

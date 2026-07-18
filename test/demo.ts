@@ -13,6 +13,10 @@ async function run() {
     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
     currencyType: "$",
     taxRate: 0.15,
+    discounts: [
+      { sequenceNumber: 1, isPercent: false, value: 500, description: "Loyalty Bonus Discount" },
+      { sequenceNumber: 2, isPercent: true, value: 10, description: "Early Payment Discount" }
+    ],
     items: [
       {
         description: "Web Development Services",

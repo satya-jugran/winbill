@@ -6,6 +6,13 @@ export interface InvoiceItem {
   unitPrice: number;
 }
 
+export interface InvoiceDiscount {
+  sequenceNumber?: number;
+  isPercent: boolean;
+  value: number;
+  description: string;
+}
+
 export interface InvoiceData {
   companyName: string;
   logoPath?: string; 
@@ -15,6 +22,7 @@ export interface InvoiceData {
   currencyType: string; 
   items: InvoiceItem[];
   taxRate: number; 
+  discounts?: InvoiceDiscount[];
   subTotal?: number; 
   taxAmount?: number; 
   totalCost?: number; 
