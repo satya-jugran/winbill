@@ -1,8 +1,6 @@
-import { InvoiceData } from "../models/types";
-
-// Note: Using type-only import for PDFKit document here for proper typing
+import { GeneratorOptions } from "../models/types";
 import type PDFDocument from "pdfkit";
 
-export interface ILayoutStrategy {
-  draw(doc: PDFKit.PDFDocument, data: InvoiceData): void;
+export interface ILayoutStrategy<TLayoutData = any> {
+  draw(doc: PDFKit.PDFDocument, data: TLayoutData, options?: GeneratorOptions): void;
 }
