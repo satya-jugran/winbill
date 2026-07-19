@@ -1,4 +1,4 @@
-import { Winbill, BillingData, GeneratorOptions } from "../src/index";
+import { Winbill, BillingData, GeneratorOptions } from "../dist/index";
 import * as path from "path";
 
 async function runDemo() {
@@ -15,7 +15,7 @@ async function runDemo() {
     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
     currency: "USD",
     locale: "en-US",
-    taxRate: 0.15,
+    taxes: [{ name: "VAT", rate: 0.15 }],
     logoPath: path.join(process.cwd(), "test", "demo-logo.png"),
     notes: "Thank you for your business. Please make payment within 30 days.",
     discounts: [
@@ -42,7 +42,7 @@ async function runDemo() {
   };
 
   const options: GeneratorOptions = {
-    filePath: path.join(process.cwd(), "test", "demo-invoice.pdf"),
+    filePath: path.join(process.cwd(), ".demo-out", "demo-invoice.pdf"),
     theme: {
       primaryColor: "#005b96",
       fontFamily: "Roboto"
@@ -57,8 +57,9 @@ async function runDemo() {
     console.log(`Invoice successfully generated at: ${options.filePath}`);
 
     // 2. Generate a Receipt (same data, just add receipt settings)
+    const { paymentUrl, qrCodeUrl, ...baseForReceipt } = billingData;
     const receiptData = { 
-      ...billingData, 
+      ...baseForReceipt,
       notes: "Thank you for your business.",
       receipt: {
         paymentDate: new Date(),
@@ -69,7 +70,7 @@ async function runDemo() {
     
     const receiptOptions = { 
       ...options, 
-      filePath: path.join(process.cwd(), "test", "demo-receipt.pdf")
+      filePath: path.join(process.cwd(), ".demo-out", "demo-receipt.pdf")
     };
     
     await winbill.generateBill(receiptData, receiptOptions);

@@ -5,10 +5,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "demo": "tsc test/demo.ts --ignoreConfig --skipLibCheck --esModuleInterop --experimentalDecorators --emitDecoratorMetadata --module commonjs --outDir .demo-out && node .demo-out/test/demo.js"
+    "demo": "npm run build && tsc -p tsconfig.demo.json && node .demo-out/demo.js",
+    "advanced-demo": "npm run build && tsc -p tsconfig.demo.json && node .demo-out/advanced_demo.js"
   },
   "keywords": [
     "invoice",
@@ -18,7 +19,7 @@
     "receipt"
   ],
   "author": "Satya Jugran",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/satya-jugran/winbill.git"
@@ -28,6 +29,7 @@
   "dependencies": {
     "inversify": "^8.2.1",
     "pdfkit": "^0.19.1",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
     "zod": "^4.4.3"
   },
@@ -37,6 +39,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^26.1.1",
     "@types/pdfkit": "^0.17.6",
+    "@types/qrcode": "^1.5.6",
     "jest": "^30.4.2",
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",

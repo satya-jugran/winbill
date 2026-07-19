@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./.demo-out",
+    "rootDir": "test",
+    "declaration": false,
+    "types": ["node", "jest"]
+  },
+  "include": [
+    "test/*demo.ts"
+  ],
+  "exclude": [
+    "dist",
+    ".demo-out"
+  ]
+}
