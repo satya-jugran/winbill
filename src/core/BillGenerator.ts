@@ -31,6 +31,7 @@ export class BillGenerator {
 
         stream.on("finish", () => resolve());
         stream.on("error", (err) => reject(err));
+        doc.on("error", (err) => reject(err));
         doc.pipe(stream);
 
         // 4. Render
