@@ -13,7 +13,7 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
     const startX = 50;
     let currentY = 50;
     const { processed, layout } = data;
-    const { primaryColor, fontFamily, fontBold } = layout;
+    let { primaryColor, fontFamily, fontBold } = layout;
 
     // Dynamically register Roboto if it's being used
     if (fontFamily === "Roboto") {
@@ -27,6 +27,9 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
       if (foundPath) {
         doc.registerFont("Roboto", path.join(foundPath, "Roboto-Regular.ttf"));
         doc.registerFont("Roboto-Bold", path.join(foundPath, "Roboto-Bold.ttf"));
+      } else {
+        fontFamily = "Helvetica";
+        fontBold = "Helvetica-Bold";
       }
     }
 

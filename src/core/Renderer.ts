@@ -2,7 +2,6 @@ import { injectable } from "inversify";
 import { ProcessedBillData, GeneratorOptions } from "../models/types";
 import { IRenderTransformer } from "../interfaces/IRenderTransformer";
 import { ILayoutStrategy } from "../interfaces/ILayoutStrategy";
-import PDFDocument from "pdfkit";
 
 @injectable()
 export class Renderer {
