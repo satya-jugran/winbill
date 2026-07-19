@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const BillingItemSchema = z.object({
   description: z.string().min(1, "Description is required"),
-  quantity: z.number().min(0, "Quantity must be a positive number"),
-  unitPrice: z.number().min(0, "Unit price must be a positive number"),
+  quantity: z.number().min(0, "Quantity must be a non-negative number"),
+  unitPrice: z.number().min(0, "Unit price must be a non-negative number"),
 });
 export type BillingItem = z.infer<typeof BillingItemSchema>;
 
