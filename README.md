@@ -132,7 +132,7 @@ interface BillingData {
   items?: BillingItem[];
   
   // Global Modifiers
-  taxes?: BillingTax[];
+  taxes?: Tax[];
   discounts?: BillingDiscount[];
   
   logoPath?: string;
