@@ -1,48 +1,49 @@
 import "reflect-metadata";
 import { container } from "./config/inversify.config";
 import { TYPES } from "./config/types";
-import { InvoiceGenerator } from "./core/InvoiceGenerator";
-import { InvoiceData, InvoiceItem, GeneratorOptions } from "./models/types";
+import { BillGenerator } from "./core/BillGenerator";
+import { BillingData, BillingItem, BillingDiscount, GeneratorOptions } from "./models/types";
 import { ILayoutStrategy } from "./interfaces/ILayoutStrategy";
 
 // Export types and interfaces for consumers
 export {
-  InvoiceData,
-  InvoiceItem,
+  BillingData,
+  BillingItem,
+  BillingDiscount,
   GeneratorOptions,
   ILayoutStrategy,
   TYPES
 };
 
 // Export the IoC container so advanced users can override bindings
-export { container, InvoiceGenerator };
+export { container, BillGenerator };
 
 /**
  * The main facade for the Winbill package.
  * Consumers instantiate this class to generate PDFs.
  */
 export class Winbill {
-  private generator: InvoiceGenerator;
+  private generator: BillGenerator;
 
   constructor() {
-    // Resolve the internal InvoiceGenerator from the DI container
-    this.generator = container.get<InvoiceGenerator>(TYPES.InvoiceGenerator);
+    this.generator = container.get<BillGenerator>(TYPES.BillGenerator);
   }
 
-  public async generateInvoice(data: InvoiceData, options: GeneratorOptions): Promise<void> {
+  /**
+   * Generates a billing document (Invoice/Receipt) based on the provided data and options.
+   * @param data The BillingData payload
+   * @param options Configuration options for generation
+   * @returns A promise that resolves when the PDF is written
+   */
+  public async generateBill(data: BillingData, options: GeneratorOptions): Promise<void> {
     return this.generator.generate(data, options);
   }
 
   /**
-   * Helper method to generate a random alphanumeric invoice number.
-   * @param prefix Optional string to prepend to the generated number (e.g. "INV-")
-   * @returns A generated random invoice number.
+   * Helper method to generate a randomized, alphanumeric bill number
+   * @param prefix Optional prefix (defaults to "BILL-")
    */
-  public generateInvoiceNumber(prefix?: string): string {
-    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-    const timestampPart = Date.now().toString().slice(-4);
-    const generatedNumber = `${timestampPart}-${randomPart}`;
-    
-    return prefix ? `${prefix}${generatedNumber}` : generatedNumber;
+  public generateBillNumber(prefix?: string): string {
+    return this.generator.generateBillNumber(prefix);
   }
 }
