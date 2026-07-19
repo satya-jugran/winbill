@@ -179,6 +179,6 @@ interface GeneratorOptions {
 
 ## How It Works
 
-By default, the engine uses a clean Grayscale layout strategy.
+By default, the engine uses a modern, clean DefaultLayout strategy.
 - If the `receipt` object is omitted, the document acts as an **Invoice** (request for payment).
 - If the `receipt` object is passed, the layout engine seamlessly transforms the document into a **Receipt** (proof of payment), altering the main title, hiding the due date, appending a "PAID IN FULL" acknowledgement at the bottom, and optionally stamping a watermark across the page.
