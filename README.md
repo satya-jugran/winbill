@@ -168,12 +168,15 @@ interface BillingDiscount {
 
 #### `GeneratorOptions`
 ```typescript
+type LayoutType = 'DEFAULT';
+
 interface GeneratorOptions {
   filePath: string;            // Absolute path to save the PDF to
   theme?: {
     primaryColor?: string;     // Color for headers and titles
     fontFamily?: string;       // Custom font family name
   };
+  layout?: LayoutType;         // Choose the layout template to render (defaults to 'DEFAULT')
 }
 ```
 
