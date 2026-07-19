@@ -25,7 +25,7 @@ export class BillProcessor {
       runningSubtotal -= amount;
       
       if (runningSubtotal < 0) {
-        throw new Error(`Discount "${discount.description}" reduces the subtotal below zero.`);
+        throw new Error(`Discount "${discount.description}" reduces the subtotal below zero`);
       }
       
       appliedDiscounts.push({

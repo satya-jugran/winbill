@@ -2,12 +2,10 @@ import "reflect-metadata";
 import { BillGenerator } from "../src/core/BillGenerator";
 import { BillProcessor } from "../src/core/BillProcessor";
 import { Renderer } from "../src/core/Renderer";
-import { BillingData, BillingDataSchema } from "../src/models/types";
+import { BillingData } from "../src/models/types";
 import { ILayoutStrategy } from "../src/interfaces/ILayoutStrategy";
 import { IRenderTransformer } from "../src/interfaces/IRenderTransformer";
 import { LayoutFactory } from "../src/factories/LayoutFactory";
-import PDFDocument from "pdfkit";
-import * as fs from "fs";
 
 // Mock PDFKit and fs
 jest.mock("pdfkit");
