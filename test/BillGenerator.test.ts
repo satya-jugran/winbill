@@ -48,7 +48,9 @@ describe("BillGenerator & BillProcessor", () => {
     invoiceNumber: "123",
     date: new Date(),
     currency: "USD",
-    taxRate: 0.1,
+    locale: "en-US",
+    taxes: [{ name: "VAT", rate: 0.15 }],
+    logoPath: "test/demo-logo.png",
     items: [{ description: "Item 1", quantity: 2, unitPrice: 50 }],
   });
 

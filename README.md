@@ -8,8 +8,8 @@ Effortlessly generate professional, beautiful PDF invoices and receipts for your
 
 <table>
   <tr>
-    <td align="center"><b>Invoice Mode</b></td>
-    <td align="center"><b>Receipt Mode (Paid)</b></td>
+    <td align="center"><b>Invoice Mode (Default)</b></td>
+    <td align="center"><b>Receipt Mode (Default)</b></td>
   </tr>
   <tr>
     <td><img src="https://unpkg.com/winbill@latest/assets/invoice.png" alt="Invoice Preview" width="100%" /></td>
@@ -24,13 +24,14 @@ npm install winbill
 ```
 
 ## Features
-- **Strictly Typed & Validated:** Full TypeScript support with `zod` validation guaranteeing your data is clean before a PDF is ever rendered.
-- **Enterprise Architecture:** Perfectly isolates business logic (Math) from presentation logic (Layouts & Transformers).
-- **Auto-Calculations:** Automatically calculates subtotals, complex stacked discounts, and taxes.
-- **Pagination:** Automatically adds new pages for large item tables.
-- **Internationalization:** Native `Intl.NumberFormat` support using ISO currency codes and locales.
-- **Theming:** Customize colors and typography.
-- **Smart Formatting:** Elegant default layout, with automatic toggling between "INVOICE" and "RECEIPT" modes.
+- **Advanced Output:** Generate directly to a disk file or directly to a memory `Buffer` for modern web streaming (Express, NestJS, Next.js).
+- **Tax & Discount Engine:** Supports stacked global taxes and discounts, categorized product/service groupings, and line-item exemptions. 
+- **Interactive Elements:** Automatically renders clickable payment links and embeds QR codes.
+- **Strictly Typed & Validated:** Full TypeScript support with robust `zod` validation. Invalid payloads throw immediately!
+- **Internationalization & i18n:** Native `Intl.NumberFormat` support for all ISO currency codes, plus a full `translations` dictionary to localize static PDF labels.
+- **Theming & Custom Fonts:** Inject your own custom `.ttf` font paths and define strict brand colors.
+- **Multiple Layouts:** Comes out-of-the-box with `DEFAULT`, `MODERN`, `MINIMAL`, and `THERMAL` (80mm POS) templates. 
+- **Extensible Architecture:** Need a bespoke design? Implement `ILayoutStrategy` and inject your own completely custom layout!
 
 ## Quick Start
 
@@ -41,7 +42,7 @@ import * as path from "path";
 async function run() {
   const winbill = new Winbill();
 
-  // 1. Generate a random bill number (e.g., BILL-8911-WWA93V)
+  // Generate a random bill number
   const invoiceNumber = winbill.generateBillNumber("INV-");
 
   const data: BillingData = {
@@ -50,45 +51,47 @@ async function run() {
     clientName: "Globex Corporation",
     clientAddress: "456 Enterprise Way\nSpringfield, IL 62704",
     invoiceNumber: invoiceNumber,
-    purchaseOrderNumber: "PO-987654321",
     date: new Date(),
-    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 
     currency: "USD",
     locale: "en-US",
-    taxRate: 0.15, // 15% Tax
-    notes: "Thank you for your business. Please make payment within 30 days.",
     
-    // Stacked Discounts processed sequentially
-    discounts: [
-      { sequenceNumber: 1, isPercent: false, value: 50, description: "Loyalty Bonus" },
-      { sequenceNumber: 2, isPercent: true, value: 10, description: "Early Payment" }
-    ],
+    // Global Taxes
+    taxes: [{ name: "State Tax", rate: 0.08 }],
     
-    items: [
-      { description: "Web Development", quantity: 40, unitPrice: 150.0 },
-      { description: "Server Hosting", quantity: 1, unitPrice: 1200.0 },
+    // Item Groupings
+    categories: [
+      {
+        name: "Web Services",
+        items: [
+          { description: "Development", quantity: 40, unitPrice: 150.0 },
+          { description: "Hosting (Tax Exempt)", quantity: 1, unitPrice: 50.0, isTaxExempt: true }
+        ],
+        // Category-specific taxes
+        taxes: [{ name: "Digital Services Tax", rate: 0.05 }]
+      }
     ],
+
+    paymentUrl: "https://stripe.com/pay/xyz", // Generates clickable link!
+    qrCodeUrl: "https://stripe.com/pay/xyz",  // Automatically renders QR code!
+    
+    termsAndConditions: "1. All sales are final.\n2. Payment is due within 30 days." // Spawns an appendix page!
   };
 
   const options: GeneratorOptions = {
     filePath: path.join(__dirname, "invoice.pdf"),
-    theme: { primaryColor: "#005b96" }
+    layout: 'DEFAULT',
+    theme: { 
+      primaryColor: "#005b96",
+      translations: { invoice: "FACTURE" } // i18n example
+    }
   };
 
-  // Generate the Invoice
+  // Generate a PDF File
   await winbill.generateBill(data, options);
 
-  // Turn it into a Receipt!
-  data.notes = "Thank you for your business.";
-  data.receipt = {
-    paymentDate: new Date(),
-    paymentMethod: "Credit Card",
-    addWatermark: true
-  };
-  
-  options.filePath = path.join(__dirname, "receipt.pdf");
-
-  await winbill.generateBill(data, options);
+  // Or generate a memory Buffer to stream directly to web clients!
+  // const pdfBuffer = await winbill.generateBuffer(data, options);
 }
 
 run();
@@ -99,7 +102,9 @@ run();
 ### `Winbill` Class Methods
 
 - **`generateBill(data: BillingData, options: GeneratorOptions): Promise<void>`**
-  Validates data using Zod, processes math calculations, and generates the PDF file.
+  Generates and saves the PDF file to disk (requires `options.filePath`).
+- **`generateBuffer(data: BillingData, options: GeneratorOptions): Promise<Buffer>`**
+  Generates the PDF in memory and returns a Buffer (perfect for web servers).
 - **`generateBillNumber(prefix?: string): string`**
   Helper method to generate a randomized, alphanumeric bill number.
 
@@ -108,80 +113,67 @@ run();
 #### `BillingData`
 ```typescript
 interface BillingData {
-  companyName: string;         // E.g., "Acme Corp"
-  companyAddress?: string | string[]; // Multiline support
-  clientName: string;          // E.g., "John Doe"
-  clientAddress?: string | string[];  // Multiline support
+  companyName: string;
+  companyAddress?: string | string[]; 
+  clientName: string;
+  clientAddress?: string | string[];
   
-  invoiceNumber: string;       // E.g., "INV-001"
+  invoiceNumber: string;
   purchaseOrderNumber?: string;
-  date: Date;                  // Invoice issue date
-  dueDate?: Date;              // Optional: When the invoice is due
+  date: Date;
+  dueDate?: Date;
   
-  currency: string;            // Standard 3-letter ISO code (e.g., "USD", "EUR")
-  locale?: string;             // Optional: Formatting locale (e.g., "en-US", "de-DE")
+  currency: string;
+  locale?: string;
   
-  items: BillingItem[];        // Array of line items
-  taxRate: number;             // Tax rate (e.g., 0.15 for 15%)
-  discounts?: BillingDiscount[]; // Optional array of stacked discounts
+  // Categorized Items
+  categories?: BillingCategory[];
+  // Legacy / Flat Items
+  items?: BillingItem[];
   
-  logoPath?: string;           // Optional: Absolute path to a logo image file
-  notes?: string;              // Optional: Footer notes
+  // Global Modifiers
+  taxes?: BillingTax[];
+  discounts?: BillingDiscount[];
   
-  // Overrides (if omitted, they are calculated automatically)
-  subTotal?: number;
-  taxAmount?: number;
-  totalCost?: number;
+  logoPath?: string;
+  notes?: string;
+  termsAndConditions?: string;
   
-  // If present, converts the document into a Receipt
+  // Interactive Elements (Not allowed on Receipts)
+  paymentUrl?: string; 
+  qrCodeUrl?: string;  
+  
+  // Convert document into a Receipt
   receipt?: ReceiptSettings;   
-}
-```
-
-#### `ReceiptSettings`
-```typescript
-interface ReceiptSettings {
-  paymentDate?: Date;          // Date the payment was received
-  paymentMethod?: string;      // Method (e.g., "Credit Card", "Wire Transfer")
-  addWatermark?: boolean;      // If true, stamps a large "PAID" watermark diagonally
-}
-```
-
-#### `BillingItem`
-```typescript
-interface BillingItem {
-  description: string;
-  quantity: number;
-  unitPrice: number;
-}
-```
-
-#### `BillingDiscount`
-```typescript
-interface BillingDiscount {
-  sequenceNumber?: number;     // Optional: Dictates calculation order (lowest first)
-  isPercent: boolean;          // If true, value is a % (0-100). If false, flat amount
-  value: number;               // The discount amount
-  description: string;         // E.g., "Loyalty Bonus", "Holiday Sale"
 }
 ```
 
 #### `GeneratorOptions`
 ```typescript
-type LayoutType = 'DEFAULT';
-
 interface GeneratorOptions {
-  filePath: string;            // Absolute path to save the PDF to
+  filePath?: string; // Required for generateBill()
+  layout?: 'DEFAULT' | 'MODERN' | 'MINIMAL' | 'THERMAL';
   theme?: {
-    primaryColor?: string;     // Color for headers and titles
-    fontFamily?: string;       // Custom font family name
+    primaryColor?: string;
+    customFontPath?: { regular: string, bold: string }; // Use absolute paths to .ttf
+    translations?: {
+      invoice?: string;
+      receipt?: string;
+      invoiceNumber?: string;
+      poNumber?: string;
+      date?: string;
+      dueDate?: string;
+      from?: string;
+      billTo?: string;
+      description?: string;
+      qty?: string;
+      unitPrice?: string;
+      total?: string;
+      subtotal?: string;
+    };
   };
-  layout?: LayoutType;         // Choose the layout template to render (defaults to 'DEFAULT')
 }
 ```
 
-## How It Works
-
-By default, the engine uses a modern, clean DefaultLayout strategy.
-- If the `receipt` object is omitted, the document acts as an **Invoice** (request for payment).
-- If the `receipt` object is passed, the layout engine seamlessly transforms the document into a **Receipt** (proof of payment), altering the main title, hiding the due date, appending a "PAID IN FULL" acknowledgement at the bottom, and optionally stamping a watermark across the page.
+## License
+Licensed under **GPL-3.0**.
