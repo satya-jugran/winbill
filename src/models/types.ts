@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const TaxSchema = z.object({
   name: z.string().min(1, "Tax name is required"),
-  rate: z.number().min(0, "Tax rate must be a non-negative number")
+  rate: z.number().min(0, "Tax rate must be a non-negative number").max(1, "Tax rate cannot exceed 100% (1.0)")
 });
 export type Tax = z.infer<typeof TaxSchema>;
 
@@ -26,7 +26,7 @@ export const BillingItemSchema = z.object({
   description: z.string().min(1, "Description is required"),
   quantity: z.number().min(0, "Quantity must be a non-negative number"),
   unitPrice: z.number().min(0, "Unit price must be a non-negative number"),
-  taxRate: z.number().min(0).optional(),
+  taxRate: z.number().min(0, "Tax rate must be a non-negative number").max(1, "Tax rate cannot exceed 100% (1.0)").optional(),
   isTaxExempt: z.boolean().optional(),
   discount: BillingDiscountSchema.optional()
 });
