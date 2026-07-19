@@ -6,6 +6,4 @@ import { DefaultLayoutData, DefaultLayoutTransformer } from "./DefaultLayoutTran
 // For Minimal layout, the data requirements are largely the same as Default
 // so we can reuse the DefaultLayoutTransformer logic.
 @injectable()
-export class MinimalLayoutTransformer extends DefaultLayoutTransformer {
-  // We just inherit transform() since the data structure is identical for minimal.
-}
+export class MinimalLayoutTransformer extends DefaultLayoutTransformer {}

@@ -184,7 +184,33 @@ export class ModernLayout implements ILayoutStrategy<{ processed: ProcessedBillD
       });
       
       if (category.name || category.hasCategoryCalculations) {
-        // category subtotals
+        checkPageBreak(20 + (category.presentationDiscounts.length * 15) + (category.presentationTaxes.length * 15) + 30, false);
+        
+        doc.fillColor("#333333").font(fontBold).fontSize(9);
+        doc.text(`${category.name ? category.name + ' ' : ''}${labels.subtotal}`, 350, currentY, { align: "right", width: 100 });
+        doc.text(category.subTotal, 470, currentY, { align: "right", width: 100 });
+        currentY += 15;
+
+        doc.font(fontFamily);
+        category.presentationDiscounts.forEach(d => {
+          doc.text(d.label, 350, currentY, { align: "right", width: 100 });
+          doc.text(d.formattedAmount, 470, currentY, { align: "right", width: 100 });
+          currentY += 15;
+        });
+
+        category.presentationTaxes.forEach(t => {
+          doc.text(t.label, 350, currentY, { align: "right", width: 100 });
+          doc.text(t.formattedAmount, 470, currentY, { align: "right", width: 100 });
+          currentY += 15;
+        });
+
+        if (category.hasCategoryCalculations) {
+          doc.font(fontBold);
+          doc.text(`${category.name ? category.name + ' ' : ''}${labels.total}:`, 350, currentY, { align: "right", width: 100 });
+          doc.text(category.total, 470, currentY, { align: "right", width: 100 });
+          currentY += 15;
+        }
+        currentY += 15;
       }
     });
 
