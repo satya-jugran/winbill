@@ -176,7 +176,7 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
         checkPageBreak(20 + (category.presentationDiscounts.length * 15) + (category.presentationTaxes.length * 15) + 30, false);
         
         doc.font(fontBold);
-        doc.text(`${category.name ? category.name + ' ' : ''}Subtotal:`, 350, itemY, { align: "left" });
+        doc.text(`${category.name ? category.name + ' ' : ''}${labels.subtotal}`, 350, itemY, { align: "left" });
         doc.text(category.subTotal, 450, itemY, { width: 100, align: "right" });
         itemY += 20;
 
@@ -195,7 +195,7 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
 
         if (category.hasCategoryCalculations) {
           doc.font(fontBold);
-          doc.text(`${category.name ? category.name + ' ' : ''}Total:`, 350, itemY, { align: "left" });
+          doc.text(`${category.name ? category.name + ' ' : ''}${labels.total}:`, 350, itemY, { align: "left" });
           doc.text(category.total, 450, itemY, { width: 100, align: "right" });
           itemY += 20;
         }

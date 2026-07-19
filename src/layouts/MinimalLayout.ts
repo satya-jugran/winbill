@@ -137,7 +137,7 @@ export class MinimalLayout implements ILayoutStrategy<{ processed: ProcessedBill
         });
         
         if (category.hasCategoryCalculations) {
-           doc.font(fontBold).text(`Total`, 350, itemY, { align: "left" }).text(category.total, colTotal, itemY, { width: 80, align: "right" }).font(fontFamily);
+           doc.font(fontBold).text(`${labels.total}`, 350, itemY, { align: "left" }).text(category.total, colTotal, itemY, { width: 80, align: "right" }).font(fontFamily);
            itemY += 20;
         }
         itemY += 15;

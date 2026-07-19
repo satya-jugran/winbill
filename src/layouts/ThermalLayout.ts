@@ -110,7 +110,7 @@ export class ThermalLayout implements ILayoutStrategy<{ processed: ProcessedBill
           currentY += 10;
         });
         
-        doc.font(fontBold).text(`Total`, margin, currentY).text(category.total, margin, currentY, alignRight).font(fontFamily);
+        doc.font(fontBold).text(`${labels.total}`, margin, currentY).text(category.total, margin, currentY, alignRight).font(fontFamily);
         currentY += 12;
       }
       
