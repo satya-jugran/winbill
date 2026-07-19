@@ -161,12 +161,14 @@ export class ModernLayout implements ILayoutStrategy<{ processed: ProcessedBillD
 
       doc.font(fontFamily).fontSize(9);
       category.items.forEach(item => {
-        checkPageBreak(25, true);
+        const rowHeight = doc.heightOfString(item.description, { width: 220 });
+        const cellHeight = Math.max(rowHeight, 15);
+        checkPageBreak(cellHeight + 10, true);
         
         if (isEvenRow) {
-          doc.fillColor("#f2f2f2").rect(40, currentY, 532, 25).fill();
+          doc.fillColor("#f2f2f2").rect(40, currentY, 532, cellHeight + 10).fill();
         } else {
-          doc.fillColor("#e6e6e6").rect(40, currentY, 532, 25).fill(); // slightly darker gray as per reference
+          doc.fillColor("#e6e6e6").rect(40, currentY, 532, cellHeight + 10).fill(); // slightly darker gray as per reference
         }
         
         doc.fillColor("#333333");
@@ -176,7 +178,7 @@ export class ModernLayout implements ILayoutStrategy<{ processed: ProcessedBillD
         doc.text(item.qty, 410, currentY + 7, { width: 50, align: "center" });
         doc.text(item.total, 470, currentY + 7, { width: 90, align: "right" });
         
-        currentY += 25;
+        currentY += cellHeight + 10;
         isEvenRow = !isEvenRow;
         slNo++;
       });

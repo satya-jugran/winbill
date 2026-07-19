@@ -10,7 +10,10 @@ export class BillProcessor {
       : (data.items ? [{ name: "", items: data.items }] : []);
 
     const processedCategories: ProcessedCategory[] = [];
-    let grandSubTotal = 0;
+    let grandSubTotal = 0; // Pre-tax, pre-discount raw subtotal
+    let runningCategorySum = 0; // Post-tax, post-discount sum of categories for global math
+    let totalAccumulatedTax = 0;
+    let totalAccumulatedDiscount = 0;
 
     // 2. Process Item Level & Category Level
     for (const category of workingCategories) {
@@ -44,11 +47,13 @@ export class BillProcessor {
           calculatedTotal: itemRunningTotal
         });
 
-        categorySubTotal += itemRunningTotal;
+        categorySubTotal += (item.unitPrice * item.quantity);
+        totalAccumulatedDiscount += calculatedDiscountAmount;
+        totalAccumulatedTax += calculatedTaxAmount;
       }
 
       // B. Category Level
-      let categoryRunningTotal = categorySubTotal;
+      let categoryRunningTotal = categorySubTotal - (processedItems.reduce((acc, i) => acc + (i.calculatedDiscountAmount || 0), 0)) + (processedItems.reduce((acc, i) => acc + (i.calculatedTaxAmount || 0), 0));
       const categoryAppliedDiscounts: AppliedDiscount[] = [];
       const categoryAppliedTaxes: { name: string; amount: number; rate: number }[] = [];
       let categoryTotalDiscountAmount = 0;
@@ -84,6 +89,9 @@ export class BillProcessor {
           rate: tax.rate
         });
       }
+      
+      totalAccumulatedDiscount += categoryTotalDiscountAmount;
+      totalAccumulatedTax += categoryTotalTaxAmount;
 
       processedCategories.push({
         name: category.name,
@@ -96,13 +104,14 @@ export class BillProcessor {
         appliedTaxes: categoryAppliedTaxes
       });
 
-      grandSubTotal += categoryRunningTotal;
+      grandSubTotal += categorySubTotal;
+      runningCategorySum += categoryRunningTotal;
     }
 
     // 3. Global Level
     // If user provided a manual subTotal, use it. Otherwise use the calculated one.
     const subTotal = data.subTotal ?? grandSubTotal;
-    let runningGrandTotal = subTotal;
+    let runningGrandTotal = data.subTotal ?? runningCategorySum;
     
     const globalAppliedDiscounts: AppliedDiscount[] = [];
     const globalAppliedTaxes: { name: string; amount: number; rate: number }[] = [];
@@ -142,7 +151,7 @@ export class BillProcessor {
       });
     }
 
-    const taxAmount = data.taxAmount ?? globalTotalTaxAmount;
+    const taxAmount = data.taxAmount ?? (totalAccumulatedTax + globalTotalTaxAmount);
     const totalCost = data.totalCost ?? runningGrandTotal;
 
     return {

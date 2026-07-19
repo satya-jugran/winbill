@@ -108,12 +108,15 @@ export class MinimalLayout implements ILayoutStrategy<{ processed: ProcessedBill
 
       doc.font(fontFamily);
       category.items.forEach(item => {
-        checkPageBreak(25, true);
         // Minimal layout combines qty/unit into description
         const descText = `${item.description} (${item.qty} x ${item.unitPrice})`;
+        const rowHeight = doc.heightOfString(descText, { width: 350 });
+        const cellHeight = Math.max(rowHeight, 15);
+        checkPageBreak(cellHeight + 5, true);
+        
         doc.text(descText, colDesc, itemY, { width: 350 });
         doc.text(item.total, colTotal, itemY, { width: 80, align: "right" });
-        itemY += 20;
+        itemY += cellHeight + 5;
       });
 
       if (category.name || category.hasCategoryCalculations) {

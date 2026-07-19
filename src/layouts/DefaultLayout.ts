@@ -156,7 +156,9 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
 
       doc.font(fontFamily).fillColor("#333333").fontSize(10);
       category.items.forEach(item => {
-        checkPageBreak(30, true);
+        const rowHeight = doc.heightOfString(item.description, { width: 230 });
+        const cellHeight = Math.max(rowHeight, 15);
+        checkPageBreak(cellHeight + 15, true);
         this.generateTableRow(
           doc,
           itemY,
@@ -166,8 +168,8 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
           item.total,
           colDesc, colQty, colUnit, colTotal
         );
-        this.generateHr(doc, itemY + 20);
-        itemY += 30;
+        this.generateHr(doc, itemY + cellHeight + 5);
+        itemY += cellHeight + 15;
       });
 
       if (category.name || category.hasCategoryCalculations) {

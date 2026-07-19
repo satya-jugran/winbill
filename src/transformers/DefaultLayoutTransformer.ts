@@ -84,12 +84,22 @@ export class DefaultLayoutTransformer implements IRenderTransformer<DefaultLayou
     const formattedDueDate = data.dueDate ? data.dueDate.toLocaleDateString(locale) : undefined;
     
     const presentationCategories: PresentationCategory[] = data.categories.map(cat => {
-      const items = cat.items.map(item => ({
-        description: item.description,
-        qty: item.quantity.toString(),
-        unitPrice: formatCurrency(item.unitPrice),
-        total: formatCurrency(item.calculatedTotal)
-      }));
+      const items = cat.items.map(item => {
+        let desc = item.description;
+        if (item.discount) {
+           const val = item.discount.isPercent ? `${item.discount.value}%` : formatCurrency(item.discount.value);
+           desc += `\n(Discount: -${val})`;
+        }
+        if (item.taxRate) {
+           desc += `\n(Tax: +${(item.taxRate * 100).toFixed(0)}%)`;
+        }
+        return {
+          description: desc,
+          qty: item.quantity.toString(),
+          unitPrice: formatCurrency(item.unitPrice),
+          total: formatCurrency(item.calculatedTotal)
+        };
+      });
       
       const presentationDiscounts = cat.appliedDiscounts.map(d => ({
         label: d.isPercent ? `${d.description} (${d.originalValue}%):` : `${d.description}:`,

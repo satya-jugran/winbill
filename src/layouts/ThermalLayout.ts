@@ -84,8 +84,9 @@ export class ThermalLayout implements ILayoutStrategy<{ processed: ProcessedBill
       doc.font(fontFamily);
       category.items.forEach(item => {
         // Item Name
+        const nameHeight = doc.heightOfString(item.description, { width: contentWidth });
         doc.text(item.description, margin, currentY, { width: contentWidth });
-        currentY += 10;
+        currentY += nameHeight + 2;
         
         // Qty x UnitPrice = Total
         const qtyStr = `${item.qty} x ${item.unitPrice}`;
