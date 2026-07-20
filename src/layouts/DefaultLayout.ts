@@ -90,7 +90,7 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
       doc.text(`${labels.dueDate} ${layout.formattedDueDate}`, 350, currentY, { width: 200, align: "right" });
     }
        
-    currentY = 150;
+    currentY = 180;
 
     // --- Company & Client Info ---
     doc.fontSize(12).fillColor(primaryColor).font(fontBold).text(labels.from, startX, currentY);

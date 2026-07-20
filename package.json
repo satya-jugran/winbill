@@ -12,9 +12,9 @@
     "advanced-demo": "npm run build && tsc -p tsconfig.demo.json && node .demo-out/advanced_demo.js"
   },
   "keywords": [
+    "billing",
     "invoice",
     "pdf",
-    "pdfkit",
     "generator",
     "receipt"
   ],

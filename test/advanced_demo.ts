@@ -110,10 +110,23 @@ async function run() {
   };
   await winbill.generateBill(receiptData, modernReceiptOptions);
 
-  console.log("Generating Buffer Output (No Disk Write)...");
+  console.log("Generating Buffer Output (And Saving to Disk)...");
   const bufferOptions: GeneratorOptions = { layout: 'DEFAULT' };
   const buffer = await winbill.generateBuffer(data, bufferOptions);
+  fs.writeFileSync(path.join(outDir, "invoice_buffer.pdf"), buffer);
   console.log(`Buffer created successfully! Size: ${buffer.length} bytes.`);
+  
+  console.log("Generating Stream Output (And Saving to Disk)...");
+  const streamOptions: GeneratorOptions = { layout: 'DEFAULT' };
+  const stream = await winbill.generateStream(data, streamOptions);
+  const writeStream = fs.createWriteStream(path.join(outDir, "invoice_stream.pdf"));
+  stream.pipe(writeStream);
+  
+  await new Promise((resolve, reject) => {
+    writeStream.on('finish', resolve);
+    writeStream.on('error', reject);
+  });
+  console.log(`Stream output saved successfully!`);
   
   console.log(`Demo completed! Files saved in ${outDir}`);
 }
