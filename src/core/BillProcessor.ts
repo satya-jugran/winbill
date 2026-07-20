@@ -47,13 +47,13 @@ export class BillProcessor {
           calculatedTotal: itemRunningTotal
         });
 
-        categorySubTotal += (item.unitPrice * item.quantity);
+        categorySubTotal += itemRunningTotal;
         totalAccumulatedDiscount += calculatedDiscountAmount;
         totalAccumulatedTax += calculatedTaxAmount;
       }
 
       // B. Category Level
-      let categoryRunningTotal = categorySubTotal - (processedItems.reduce((acc, i) => acc + (i.calculatedDiscountAmount || 0), 0)) + (processedItems.reduce((acc, i) => acc + (i.calculatedTaxAmount || 0), 0));
+      let categoryRunningTotal = categorySubTotal;
       const categoryAppliedDiscounts: AppliedDiscount[] = [];
       const categoryAppliedTaxes: { name: string; amount: number; rate: number }[] = [];
       let categoryTotalDiscountAmount = 0;
@@ -67,6 +67,9 @@ export class BillProcessor {
           : discount.value;
           
         categoryRunningTotal -= amount;
+        if (categoryRunningTotal < 0) {
+          throw new Error(`Discount "${discount.description}" reduces the category subtotal below zero`);
+        }
         categoryTotalDiscountAmount += amount;
         
         categoryAppliedDiscounts.push({
@@ -109,9 +112,8 @@ export class BillProcessor {
     }
 
     // 3. Global Level
-    // If user provided a manual subTotal, use it. Otherwise use the calculated one.
-    const subTotal = data.subTotal ?? grandSubTotal;
-    let runningGrandTotal = data.subTotal ?? runningCategorySum;
+    const subTotal = grandSubTotal;
+    let runningGrandTotal = runningCategorySum;
     
     const globalAppliedDiscounts: AppliedDiscount[] = [];
     const globalAppliedTaxes: { name: string; amount: number; rate: number }[] = [];
@@ -151,8 +153,8 @@ export class BillProcessor {
       });
     }
 
-    const taxAmount = data.taxAmount ?? (totalAccumulatedTax + globalTotalTaxAmount);
-    const totalCost = data.totalCost ?? runningGrandTotal;
+    const taxAmount = totalAccumulatedTax + globalTotalTaxAmount;
+    const totalCost = runningGrandTotal;
 
     return {
       ...data,

@@ -71,9 +71,6 @@ const BaseBillingDataSchema = z.object({
   paymentUrl: z.string().url().optional(),
   qrCodeUrl: z.string().url().optional(),
   
-  subTotal: z.number().optional(),
-  taxAmount: z.number().optional(),
-  totalCost: z.number().optional(),
   
   receipt: ReceiptSettingsSchema.optional(),
   
