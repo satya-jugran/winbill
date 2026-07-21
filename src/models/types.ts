@@ -60,6 +60,8 @@ export const BankDetailsSchema = z.object({
   iban: z.string().optional(),
   swift: z.string().optional(),
   routingNumber: z.string().optional(),
+}).refine(data => Object.values(data).some(val => val !== undefined && val.trim() !== ""), {
+  message: "At least one bank detail field must be provided if bankDetails is specified"
 });
 export type BankDetails = z.infer<typeof BankDetailsSchema>;
 
