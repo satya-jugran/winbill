@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { DefaultLayoutTransformer } from "./DefaultLayoutTransformer";
+import { DefaultLayoutTransformer } from "../default/DefaultLayoutTransformer";
 
 // The data requirements for Thermal are the same, the layout just handles the formatting.
 @injectable()

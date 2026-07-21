@@ -50,6 +50,7 @@ export const WatermarkSchema = z.object({
   text: z.string().min(1, "Watermark text is required"),
   color: z.string().optional(),
   opacity: z.number().min(0).max(1).optional(),
+  fontSize: z.enum(["xsmall", "small", "medium", "large", "xlarge"]).optional(),
 });
 export type Watermark = z.infer<typeof WatermarkSchema>;
 

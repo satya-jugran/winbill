@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { ILayoutStrategy } from "../interfaces/ILayoutStrategy";
-import { ProcessedBillData, GeneratorOptions } from "../models/types";
-import { DefaultLayoutData } from "../transformers/DefaultLayoutTransformer";
+import { ILayoutStrategy } from "../../interfaces/ILayoutStrategy";
+import { ProcessedBillData, GeneratorOptions } from "../../models/types";
+import { DefaultLayoutData } from "../default/DefaultLayoutTransformer";
 import * as fs from "fs";
 import * as path from "path";
 import type PDFDocument from "pdfkit";
@@ -308,18 +308,33 @@ export class ModernLayout implements ILayoutStrategy<{ processed: ProcessedBillD
       doc.fillOpacity(processed.watermark.opacity ?? 0.4);
       doc.strokeOpacity(processed.watermark.opacity ?? 0.4);
       
-      doc.fontSize(22).font(fontBold);
+      let watermarkSize = 22;
+      if (processed.watermark.fontSize) {
+        const sizeMap: Record<string, number> = {
+          "xsmall": 14,
+          "small": 18,
+          "medium": 22,
+          "large": 26,
+          "xlarge": 30
+        };
+        watermarkSize = sizeMap[processed.watermark.fontSize] || 22;
+      }
+      
+      doc.fontSize(watermarkSize).font(fontBold);
       const textWidth = doc.widthOfString(processed.watermark.text);
+      const textHeight = doc.heightOfString(processed.watermark.text);
       const rectWidth = Math.max(100, textWidth + 30);
+      const rectHeight = Math.max(30, textHeight + 10);
       
       // Rotate for the stamp effect
-      doc.rotate(-15, { origin: [stampX + rectWidth / 2, stampY + 15] });
+      doc.rotate(-15, { origin: [stampX + rectWidth / 2, stampY + rectHeight / 2] });
       
       doc.lineWidth(3);
       doc.strokeColor(processed.watermark.color || primaryColor);
-      doc.rect(stampX, stampY, rectWidth, 30).stroke();
+      doc.rect(stampX, stampY, rectWidth, rectHeight).stroke();
       
-      doc.fillColor(processed.watermark.color || primaryColor).text(processed.watermark.text, stampX, stampY + 5, { width: rectWidth, align: "center" });
+      const textY = stampY + (rectHeight - textHeight) / 2;
+      doc.fillColor(processed.watermark.color || primaryColor).text(processed.watermark.text, stampX, textY, { width: rectWidth, align: "center" });
       
       doc.restore();
     }

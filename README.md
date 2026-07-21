@@ -168,6 +168,7 @@ interface BillingData {
     text: string;
     color?: string;
     opacity?: number;
+    fontSize?: "xsmall" | "small" | "medium" | "large" | "xlarge";
   };
   
   // Convert document into a Receipt

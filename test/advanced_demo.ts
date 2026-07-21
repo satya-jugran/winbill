@@ -81,7 +81,7 @@ async function run() {
   const receiptData: BillingData = { 
     ...baseReceiptData, 
     notes: "Thank you for your business.",
-    watermark: { text: "PAID", color: "#e0e0e0", opacity: 0.3 },
+    watermark: { text: "PAID", fontSize: "medium", color: "#e0e0e0", opacity: 0.3 },
     receipt: { paymentDate: new Date(), paymentMethod: "Credit Card" } 
   };
   const defaultReceiptOptions: GeneratorOptions = {
