@@ -2,8 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] - 2026-07-18
+## [2.1.0] - 2026-07-21
 
+### Added
+- **Banking Details**: Added `bankDetails` to `paymentDetails` which automatically renders a "How to Pay" block containing Bank, Account Name, Account Number, IBAN, SWIFT, and Routing Number.
+- **Customizable Watermark**: Migrated the legacy `addWatermark` boolean on receipts to a powerful, fully customizable `watermark` object at the `BillingData` root. Now you can stamp any text (e.g. "DRAFT", "VOID", "OVERDUE", "PAID"), with customizable color and opacity. The bounding box dynamically adjusts to text width in Modern layouts.
+
+### Fixed
+- Fixed critical bugs related to layout rendering overlaps and PDF formatting overlaps (e.g., overlapping notes in receipts lacking "How to Pay" blocks).
+
+## [2.0.0] - 2026-07-18
 ### Breaking Changes
 - **Architecture Overhaul**: `InvoiceGenerator` is now `BillGenerator`, and `InvoiceData` is now `BillingData` to support generic billing documents (invoices, receipts, etc.).
 - **Zod Validation Runtime Validation**: The library now rigorously validates user payload using Zod. Invalid input immediately throws descriptive, strict errors instead of failing silently inside PDFKit.

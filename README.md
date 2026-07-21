@@ -26,7 +26,8 @@ npm install winbill
 ## Features
 - **Advanced Output:** Generate directly to a disk file or directly to a memory `Buffer` for modern web streaming (Express, NestJS, Next.js).
 - **Tax & Discount Engine:** Supports stacked global taxes and discounts, categorized product/service groupings, and line-item exemptions. 
-- **Interactive Elements:** Automatically renders clickable payment links and embeds QR codes.
+- **Interactive Elements & Payments:** Automatically renders clickable payment links, embeds QR codes, and dynamically draws complete "How to Pay" Bank Details blocks!
+- **Document Watermarks:** Fully customizable stamp tool for marking documents as "PAID", "DRAFT", "VOID", etc.
 - **Strictly Typed & Validated:** Full TypeScript support with robust `zod` validation. Invalid payloads throw immediately!
 - **Internationalization & i18n:** Native `Intl.NumberFormat` support for all ISO currency codes, plus a full `translations` dictionary to localize static PDF labels.
 - **Theming & Custom Fonts:** Inject your own custom `.ttf` font paths and define strict brand colors.
@@ -72,9 +73,19 @@ async function run() {
       }
     ],
 
-    paymentUrl: "https://stripe.com/pay/xyz", // Generates clickable link!
-    qrCodeUrl: "https://stripe.com/pay/xyz",  // Automatically renders QR code!
+    // Interactive & Payment Info
+    paymentDetails: {
+      paymentUrl: "https://stripe.com/pay/xyz", // Generates clickable link!
+      qrCodeUrl: "https://stripe.com/pay/xyz",  // Automatically renders QR code!
+      bankDetails: {
+        bankName: "Global Tech Bank",
+        accountNumber: "1234567890",
+        routingNumber: "098765432"
+      }
+    },
     
+    // Status Stamp
+    watermark: { text: "DRAFT", color: "#e0e0e0", opacity: 0.3 },
     termsAndConditions: "1. All sales are final.\n2. Payment is due within 30 days." // Spawns an appendix page!
   };
 
@@ -140,8 +151,24 @@ interface BillingData {
   termsAndConditions?: string;
   
   // Interactive Elements (Not allowed on Receipts)
-  paymentUrl?: string; 
-  qrCodeUrl?: string;  
+  paymentDetails?: {
+    paymentUrl?: string; 
+    qrCodeUrl?: string;
+    bankDetails?: {
+      accountName?: string;
+      accountNumber?: string;
+      bankName?: string;
+      iban?: string;
+      swift?: string;
+      routingNumber?: string;
+    }
+  };
+  
+  watermark?: {
+    text: string;
+    color?: string;
+    opacity?: number;
+  };
   
   // Convert document into a Receipt
   receipt?: ReceiptSettings;   
