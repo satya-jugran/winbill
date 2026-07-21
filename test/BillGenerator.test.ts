@@ -107,6 +107,18 @@ describe("BillGenerator & BillProcessor", () => {
       data.paymentDetails = { qrCodeUrl: "http://example.com" };
       await expect(generator.generate(data, { filePath: "test.pdf" })).rejects.toThrow("qrCodeUrl cannot be provided when generating a receipt.");
     });
+
+    it("should throw if an invalid watermark fontSize is provided", async () => {
+      const data = getValidData() as any;
+      data.watermark = { text: "PAID", fontSize: "giant" };
+      await expect(generator.generate(data, { filePath: "test.pdf" })).rejects.toThrow();
+    });
+
+    it("should pass if a valid watermark fontSize is provided", async () => {
+      const data = getValidData();
+      data.watermark = { text: "PAID", fontSize: "large" };
+      await expect(generator.generate(data, { filePath: "test.pdf" })).resolves.toBeUndefined();
+    });
   });
 
   describe("BillProcessor Math Validation", () => {
