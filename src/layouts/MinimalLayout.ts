@@ -169,12 +169,28 @@ export class MinimalLayout implements ILayoutStrategy<{ processed: ProcessedBill
     itemY += 30;
 
     doc.font(fontFamily).fontSize(10);
-    if (processed.paymentUrl && !processed.receipt) {
-      doc.text("Pay Now", startX, itemY, { link: processed.paymentUrl, underline: true });
+    let paymentY = itemY;
+    if (processed.paymentDetails?.paymentUrl && !processed.receipt) {
+      doc.text("Pay Now", startX, paymentY, { link: processed.paymentDetails.paymentUrl, underline: true });
+      paymentY += 20;
     }
     
-    if (processed.qrCodeBuffer && !processed.receipt) {
-      doc.image(processed.qrCodeBuffer, startX, itemY + 20, { width: 80 });
+    if (processed.paymentDetails?.qrCodeBuffer && !processed.receipt) {
+      doc.image(processed.paymentDetails.qrCodeBuffer, startX, paymentY, { width: 80 });
+      paymentY += 90;
+    }
+
+    if (processed.paymentDetails?.bankDetails && !processed.receipt) {
+      doc.font(fontBold).text("Bank Details", startX, paymentY);
+      doc.font(fontFamily);
+      const bd = processed.paymentDetails.bankDetails;
+      paymentY += 15;
+      if (bd.bankName) { doc.text(`Bank: ${bd.bankName}`, startX, paymentY); paymentY += 15; }
+      if (bd.accountName) { doc.text(`Account Name: ${bd.accountName}`, startX, paymentY); paymentY += 15; }
+      if (bd.accountNumber) { doc.text(`Account No: ${bd.accountNumber}`, startX, paymentY); paymentY += 15; }
+      if (bd.iban) { doc.text(`IBAN: ${bd.iban}`, startX, paymentY); paymentY += 15; }
+      if (bd.swift) { doc.text(`SWIFT: ${bd.swift}`, startX, paymentY); paymentY += 15; }
+      if (bd.routingNumber) { doc.text(`Routing No: ${bd.routingNumber}`, startX, paymentY); paymentY += 15; }
     }
 
     if (processed.notes) {

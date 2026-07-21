@@ -43,9 +43,34 @@ export type BillingCategory = z.infer<typeof BillingCategorySchema>;
 export const ReceiptSettingsSchema = z.object({
   paymentDate: z.date().optional(),
   paymentMethod: z.string().optional(),
-  addWatermark: z.boolean().optional(),
 });
 export type ReceiptSettings = z.infer<typeof ReceiptSettingsSchema>;
+
+export const WatermarkSchema = z.object({
+  text: z.string().min(1, "Watermark text is required"),
+  color: z.string().optional(),
+  opacity: z.number().min(0).max(1).optional(),
+});
+export type Watermark = z.infer<typeof WatermarkSchema>;
+
+export const BankDetailsSchema = z.object({
+  accountName: z.string().optional(),
+  accountNumber: z.string().optional(),
+  bankName: z.string().optional(),
+  iban: z.string().optional(),
+  swift: z.string().optional(),
+  routingNumber: z.string().optional(),
+}).refine(data => Object.values(data).some(val => val !== undefined && val.trim() !== ""), {
+  message: "At least one bank detail field must be provided if bankDetails is specified"
+});
+export type BankDetails = z.infer<typeof BankDetailsSchema>;
+
+export const PaymentDetailsSchema = z.object({
+  paymentUrl: z.string().url().optional(),
+  qrCodeUrl: z.string().url().optional(),
+  bankDetails: BankDetailsSchema.optional()
+});
+export type PaymentDetails = z.infer<typeof PaymentDetailsSchema>;
 
 const BaseBillingDataSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -68,11 +93,11 @@ const BaseBillingDataSchema = z.object({
   notes: z.string().optional(),
   termsAndConditions: z.string().optional(),
   
-  paymentUrl: z.string().url().optional(),
-  qrCodeUrl: z.string().url().optional(),
+  paymentDetails: PaymentDetailsSchema.optional(),
   
   
   receipt: ReceiptSettingsSchema.optional(),
+  watermark: WatermarkSchema.optional(),
   
   items: z.array(BillingItemSchema).optional(),
   categories: z.array(BillingCategorySchema).optional(),
@@ -97,18 +122,18 @@ export const BillingDataSchema = BaseBillingDataSchema.superRefine((data, ctx) =
 
   // A receipt should not have payment links or payment QR codes
   if (data.receipt) {
-    if (data.paymentUrl) {
+    if (data.paymentDetails?.paymentUrl) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "paymentUrl cannot be provided when generating a receipt.",
-        path: ["paymentUrl"]
+        path: ["paymentDetails", "paymentUrl"]
       });
     }
-    if (data.qrCodeUrl) {
+    if (data.paymentDetails?.qrCodeUrl) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "qrCodeUrl cannot be provided when generating a receipt.",
-        path: ["qrCodeUrl"]
+        path: ["paymentDetails", "qrCodeUrl"]
       });
     }
   }
@@ -164,5 +189,8 @@ export interface ProcessedBillData extends Omit<InternalBillingData, 'items' | '
   calculatedTotalCost: number;
   appliedDiscounts: AppliedDiscount[];
   appliedTaxes: { name: string; amount: number; rate: number }[];
-  qrCodeBuffer?: Buffer;
+  watermark?: Watermark;
+  paymentDetails?: PaymentDetails & {
+    qrCodeBuffer?: Buffer;
+  };
 }

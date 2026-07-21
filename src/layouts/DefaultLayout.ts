@@ -43,16 +43,16 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
     }
 
     // --- Watermark Section ---
-    if (processed.receipt && processed.receipt.addWatermark) {
+    if (processed.watermark) {
       doc.save();
-      doc.fillColor("#e0e0e0"); 
-      doc.fillOpacity(0.3); 
+      doc.fillColor(processed.watermark.color || "#e0e0e0"); 
+      doc.fillOpacity(processed.watermark.opacity ?? 0.3); 
       doc.fontSize(120);
       doc.font(fontBold);
       
       doc.translate(300, 400); 
       doc.rotate(-45);
-      doc.text("PAID", -200, -50, { align: "center", width: 400 });
+      doc.text(processed.watermark.text, -200, -50, { align: "center", width: 400 });
       
       doc.restore(); 
     }
@@ -60,7 +60,7 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
     // --- Header Section ---
     if (processed.logoPath && fs.existsSync(processed.logoPath)) {
       doc.image(processed.logoPath, startX, currentY, { width: 100 });
-    } else if (processed.qrCodeBuffer) {
+    } else if (processed.paymentDetails?.qrCodeBuffer) {
       // If no logo but we have a QR code, put QR code here as a fallback design choice, or just leave it.
       // Usually QR code goes at the bottom, we'll put it at the bottom.
     }
@@ -231,19 +231,8 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
     doc.text(`${labels.total}:`, 350, summaryY, { align: "left" });
     doc.text(layout.formattedTotal, 450, summaryY, { width: 100, align: "right" });
     
-    // Payment Link
-    if (processed.paymentUrl && !processed.receipt) {
-      summaryY += 30;
-      doc.fontSize(12).fillColor("#0000EE").font(fontFamily);
-      doc.text("Pay Now", 450, summaryY, { width: 100, align: "right", link: processed.paymentUrl, underline: true });
-    }
-
-    // QR Code
-    if (processed.qrCodeBuffer && !processed.receipt) {
-      // Put QR code at the bottom left of the summary
-      doc.image(processed.qrCodeBuffer, startX, summaryY - 30, { width: 80 });
-    }
-
+    summaryY += 40;
+    
     // Helper for bottom sections
     const checkBottomPageBreak = (spaceNeeded: number) => {
       if (summaryY + spaceNeeded > 700) {
@@ -251,20 +240,47 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
         summaryY = 50;
       }
     };
-
-    summaryY += 30;
-
-    // --- Payment Acknowledgement (Receipt Mode) ---
-    if (layout.receiptAcknowledgement) {
-      checkBottomPageBreak(60);
+    
+    // --- How to Pay Block ---
+    const pd = processed.paymentDetails;
+    if (pd && !processed.receipt && (pd.bankDetails || pd.paymentUrl || pd.qrCodeBuffer)) {
+      checkBottomPageBreak(140);
       
-      doc.fontSize(10).fillColor("#4CAF50").font(fontBold);
-      doc.text(layout.receiptAcknowledgement.title, 50, summaryY);
+      doc.fillColor(primaryColor).fontSize(14).font(fontBold).text("How to Pay", 50, summaryY);
+      doc.fillColor("#333333").fontSize(10).font(fontFamily);
       
-      doc.fillColor("#666666").font(fontFamily);
-      doc.text(layout.receiptAcknowledgement.description, 50, summaryY + 15);
-      summaryY += 45;
+      let payY = summaryY + 25;
+      
+      if (pd.bankDetails) {
+        const bd = pd.bankDetails;
+        let bdY = payY;
+        if (bd.bankName) { doc.text(`Bank: ${bd.bankName}`, 50, bdY); bdY += 15; }
+        if (bd.accountName) { doc.text(`Account Name: ${bd.accountName}`, 50, bdY); bdY += 15; }
+        if (bd.accountNumber) { doc.text(`Account No: ${bd.accountNumber}`, 50, bdY); bdY += 15; }
+        if (bd.iban) { doc.text(`IBAN: ${bd.iban}`, 50, bdY); bdY += 15; }
+        if (bd.swift) { doc.text(`SWIFT: ${bd.swift}`, 50, bdY); bdY += 15; }
+        if (bd.routingNumber) { doc.text(`Routing No: ${bd.routingNumber}`, 50, bdY); bdY += 15; }
+        payY = Math.max(payY, bdY);
+      }
+      
+      if (pd.qrCodeBuffer) {
+        const qrX = pd.bankDetails ? 280 : 50;
+        doc.image(pd.qrCodeBuffer, qrX, summaryY + 20, { width: 80 });
+        if (pd.paymentUrl) {
+          doc.fontSize(10).fillColor("#0000EE").font(fontFamily);
+          doc.text("Pay Now", qrX, summaryY + 105, { width: 80, align: "center", link: pd.paymentUrl, underline: true });
+        }
+        payY = Math.max(payY, summaryY + 125);
+      } else if (pd.paymentUrl) {
+        doc.fontSize(12).fillColor("#0000EE").font(fontFamily);
+        doc.text("Pay Now", 50, payY + 5, { link: pd.paymentUrl, underline: true });
+        payY += 25;
+      }
+      
+      summaryY = payY + 10;
     }
+
+
 
     // --- Notes Section ---
     if (processed.notes) {

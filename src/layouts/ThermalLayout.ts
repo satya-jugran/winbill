@@ -144,9 +144,23 @@ export class ThermalLayout implements ILayoutStrategy<{ processed: ProcessedBill
     doc.fontSize(8).font(fontFamily);
 
     // QR Code
-    if (processed.qrCodeBuffer && !processed.receipt) {
-      doc.image(processed.qrCodeBuffer, margin + (contentWidth / 2) - 40, currentY, { width: 80 });
+    if (processed.paymentDetails?.qrCodeBuffer && !processed.receipt) {
+      doc.image(processed.paymentDetails.qrCodeBuffer, margin + (contentWidth / 2) - 40, currentY, { width: 80 });
       currentY += 90;
+    }
+
+    if (processed.paymentDetails?.bankDetails && !processed.receipt) {
+      doc.font(fontBold).text("BANK DETAILS", margin, currentY, alignCenter);
+      currentY += 12;
+      doc.font(fontFamily);
+      const bd = processed.paymentDetails.bankDetails;
+      if (bd.bankName) { doc.text(`Bank: ${bd.bankName}`, margin, currentY, alignCenter); currentY += 12; }
+      if (bd.accountName) { doc.text(`A/C Name: ${bd.accountName}`, margin, currentY, alignCenter); currentY += 12; }
+      if (bd.accountNumber) { doc.text(`A/C No: ${bd.accountNumber}`, margin, currentY, alignCenter); currentY += 12; }
+      if (bd.iban) { doc.text(`IBAN: ${bd.iban}`, margin, currentY, alignCenter); currentY += 12; }
+      if (bd.swift) { doc.text(`SWIFT: ${bd.swift}`, margin, currentY, alignCenter); currentY += 12; }
+      if (bd.routingNumber) { doc.text(`Routing: ${bd.routingNumber}`, margin, currentY, alignCenter); currentY += 12; }
+      currentY += 5;
     }
 
     if (processed.notes) {

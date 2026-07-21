@@ -35,9 +35,18 @@ async function run() {
     notes: "Thank you for your business. Please make payment within 30 days.",
     termsAndConditions: "1. All sales are final.\n2. Payment is due within 30 days.\n3. Late payments will incur a 1.5% monthly fee.",
     
-    paymentUrl: "https://stripe.com/pay/test1234",
-    qrCodeUrl: "https://stripe.com/pay/test1234",
-    
+    paymentDetails: {
+      paymentUrl: "https://stripe.com/pay/test1234",
+      qrCodeUrl: "https://stripe.com/pay/test1234",
+      bankDetails: {
+        bankName: "Global Tech Bank",
+        accountName: "Acme Corp (Advanced)",
+        accountNumber: "1234567890",
+        iban: "US1234567890",
+        swift: "GTBUS33",
+        routingNumber: "098765432"
+      }
+    },    
     // Grouped Categories
     categories: [
       {
@@ -68,11 +77,12 @@ async function run() {
   await winbill.generateBill(data, defaultOptions);
 
   console.log("Generating Default Layout Receipt...");
-  const { paymentUrl, qrCodeUrl, ...baseReceiptData } = data;
+  const { paymentDetails, ...baseReceiptData } = data;
   const receiptData: BillingData = { 
     ...baseReceiptData, 
     notes: "Thank you for your business.",
-    receipt: { paymentDate: new Date(), paymentMethod: "Credit Card", addWatermark: true } 
+    watermark: { text: "PAID", color: "#e0e0e0", opacity: 0.3 },
+    receipt: { paymentDate: new Date(), paymentMethod: "Credit Card" } 
   };
   const defaultReceiptOptions: GeneratorOptions = {
     ...defaultOptions,
@@ -86,6 +96,13 @@ async function run() {
     layout: 'MINIMAL'
   };
   await winbill.generateBill(receiptData, minimalOptions);
+
+  console.log("Generating Thermal Layout Invoice...");
+  const thermalInvoiceOptions: GeneratorOptions = {
+    filePath: path.join(outDir, "invoice_thermal.pdf"),
+    layout: 'THERMAL'
+  };
+  await winbill.generateBill(data, thermalInvoiceOptions);
 
   console.log("Generating Thermal Layout Receipt...");
   const thermalOptions: GeneratorOptions = {
