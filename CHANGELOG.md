@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2026-07-21
+
+### Added
+- **Watermark Sizing**: Added `fontSize` property (`xsmall`, `small`, `medium`, `large`, `xlarge`) to `WatermarkSchema` to give finer control over the watermark's dimensions across templates.
+
+### Fixed
+- **Watermark Alignment**: Fixed critical watermark rotation and alignment math in `DefaultLayout` and `ModernLayout`, dynamically recalculating bounds to perfectly center large text sizes without overlapping or breaking out of bounds.
+
+### Changed
+- **Project Structure Refactor**: Refactored `src/layouts` and `src/transformers` so that both layout definitions and transformers are co-located under feature-grouped folders (`default/`, `modern/`, `minimal/`, `thermal/`) for better maintainability.
+
 ## [2.1.0] - 2026-07-21
 
 ### Added
