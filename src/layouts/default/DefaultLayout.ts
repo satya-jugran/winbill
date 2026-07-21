@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { ILayoutStrategy } from "../interfaces/ILayoutStrategy";
-import { ProcessedBillData, GeneratorOptions } from "../models/types";
-import { DefaultLayoutData } from "../transformers/DefaultLayoutTransformer";
+import { ILayoutStrategy } from "../../interfaces/ILayoutStrategy";
+import { ProcessedBillData, GeneratorOptions } from "../../models/types";
+import { DefaultLayoutData } from "./DefaultLayoutTransformer";
 import * as fs from "fs";
 import * as path from "path";
 import type PDFDocument from "pdfkit";

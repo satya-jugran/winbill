@@ -4,14 +4,14 @@ import { TYPES } from "./types";
 import { ILayoutStrategy } from "../interfaces/ILayoutStrategy";
 import { IRenderTransformer } from "../interfaces/IRenderTransformer";
 
-import { DefaultLayout } from "../layouts/DefaultLayout";
-import { DefaultLayoutTransformer } from "../transformers/DefaultLayoutTransformer";
-import { MinimalLayout } from "../layouts/MinimalLayout";
-import { MinimalLayoutTransformer } from "../transformers/MinimalLayoutTransformer";
-import { ThermalLayout } from "../layouts/ThermalLayout";
-import { ThermalLayoutTransformer } from "../transformers/ThermalLayoutTransformer";
-import { ModernLayout } from "../layouts/ModernLayout";
-import { ModernLayoutTransformer } from "../transformers/ModernLayoutTransformer";
+import { DefaultLayout } from "../layouts/default/DefaultLayout";
+import { DefaultLayoutTransformer } from "../layouts/default/DefaultLayoutTransformer";
+import { MinimalLayout } from "../layouts/minimal/MinimalLayout";
+import { MinimalLayoutTransformer } from "../layouts/minimal/MinimalLayoutTransformer";
+import { ThermalLayout } from "../layouts/thermal/ThermalLayout";
+import { ThermalLayoutTransformer } from "../layouts/thermal/ThermalLayoutTransformer";
+import { ModernLayout } from "../layouts/modern/ModernLayout";
+import { ModernLayoutTransformer } from "../layouts/modern/ModernLayoutTransformer";
 
 import { LayoutFactory } from "../factories/LayoutFactory";
 import { BillProcessor } from "../core/BillProcessor";
