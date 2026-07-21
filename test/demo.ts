@@ -57,14 +57,14 @@ async function runDemo() {
     console.log(`Invoice successfully generated at: ${options.filePath}`);
 
     // 2. Generate a Receipt (same data, just add receipt settings)
-    const { paymentUrl, qrCodeUrl, ...baseForReceipt } = billingData;
+    const { paymentDetails, ...baseForReceipt } = billingData;
     const receiptData = { 
       ...baseForReceipt,
       notes: "Thank you for your business.",
+      watermark: { text: "PAID", color: "#e0e0e0", opacity: 0.3 },
       receipt: {
         paymentDate: new Date(),
         paymentMethod: "Credit Card ending in 4242",
-        addWatermark: true
       } 
     };
     

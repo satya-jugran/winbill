@@ -259,34 +259,67 @@ export class ModernLayout implements ILayoutStrategy<{ processed: ProcessedBillD
       currentY += 40;
     }
 
-    // Payment Link & QR
-    if (processed.paymentUrl && !processed.receipt) {
-      doc.fontSize(10).fillColor("#0000EE").font(fontFamily);
-      doc.text("Pay Now", 40, currentY, { link: processed.paymentUrl, underline: true });
-    }
-    
-    if (processed.qrCodeBuffer && !processed.receipt) {
-      doc.image(processed.qrCodeBuffer, 40, currentY + 15, { width: 60 });
-      currentY += 80;
+    // --- How to Pay Block ---
+    const pd = processed.paymentDetails;
+    if (pd && !processed.receipt && (pd.bankDetails || pd.paymentUrl || pd.qrCodeBuffer)) {
+      currentY += 20;
+      checkPageBreak(120);
+      
+      doc.fillColor(primaryColor).font(fontBold).fontSize(10).text("How to Pay", 40, currentY);
+      doc.fillColor("#333333").font(fontFamily).fontSize(9);
+      
+      let payY = currentY + 15;
+      
+      if (pd.bankDetails) {
+        const bd = pd.bankDetails;
+        let bdY = payY;
+        if (bd.bankName) { doc.text(`Bank: ${bd.bankName}`, 40, bdY); bdY += 12; }
+        if (bd.accountName) { doc.text(`Account Name: ${bd.accountName}`, 40, bdY); bdY += 12; }
+        if (bd.accountNumber) { doc.text(`Account No: ${bd.accountNumber}`, 40, bdY); bdY += 12; }
+        if (bd.iban) { doc.text(`IBAN: ${bd.iban}`, 40, bdY); bdY += 12; }
+        if (bd.swift) { doc.text(`SWIFT: ${bd.swift}`, 40, bdY); bdY += 12; }
+        if (bd.routingNumber) { doc.text(`Routing No: ${bd.routingNumber}`, 40, bdY); bdY += 12; }
+        payY = Math.max(payY, bdY);
+      }
+      
+      if (pd.qrCodeBuffer) {
+        const qrX = pd.bankDetails ? 240 : 40;
+        doc.image(pd.qrCodeBuffer, qrX, currentY + 15, { width: 60 });
+        if (pd.paymentUrl) {
+          doc.fontSize(10).fillColor("#0000EE").font(fontFamily);
+          doc.text("Pay Now", qrX, currentY + 80, { width: 60, align: "center", link: pd.paymentUrl, underline: true });
+        }
+        payY = Math.max(payY, currentY + 100);
+      } else if (pd.paymentUrl) {
+        doc.fontSize(10).fillColor("#0000EE").font(fontFamily);
+        doc.text("Pay Now", 40, payY + 5, { link: pd.paymentUrl, underline: true });
+        payY += 20;
+      }
+      
+      currentY = payY + 10;
     }
 
     // --- Receipt Watermark / Stamp ---
-    if (processed.receipt && processed.receipt.addWatermark) {
+    if (processed.watermark) {
       doc.save();
       const stampX = 420;
       const stampY = currentY - 20; // Exactly in the empty space on the bottom right
       
-      doc.fillOpacity(0.4);
-      doc.strokeOpacity(0.4);
+      doc.fillOpacity(processed.watermark.opacity ?? 0.4);
+      doc.strokeOpacity(processed.watermark.opacity ?? 0.4);
+      
+      doc.fontSize(22).font(fontBold);
+      const textWidth = doc.widthOfString(processed.watermark.text);
+      const rectWidth = Math.max(100, textWidth + 30);
       
       // Rotate for the stamp effect
-      doc.rotate(-15, { origin: [stampX + 50, stampY + 15] });
+      doc.rotate(-15, { origin: [stampX + rectWidth / 2, stampY + 15] });
       
       doc.lineWidth(3);
-      doc.strokeColor(primaryColor);
-      doc.rect(stampX, stampY, 100, 30).stroke();
+      doc.strokeColor(processed.watermark.color || primaryColor);
+      doc.rect(stampX, stampY, rectWidth, 30).stroke();
       
-      doc.fillColor(primaryColor).fontSize(22).font(fontBold).text("PAID", stampX, stampY + 5, { width: 100, align: "center" });
+      doc.fillColor(processed.watermark.color || primaryColor).text(processed.watermark.text, stampX, stampY + 5, { width: rectWidth, align: "center" });
       
       doc.restore();
     }

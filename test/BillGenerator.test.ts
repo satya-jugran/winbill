@@ -97,7 +97,7 @@ describe("BillGenerator & BillProcessor", () => {
     it("should throw if paymentUrl is provided for a receipt", async () => {
       const data = getValidData();
       data.receipt = {};
-      data.paymentUrl = "http://example.com";
+      data.paymentDetails = { paymentUrl: "http://example.com" };
       await expect(generator.generate(data, { filePath: "test.pdf" })).rejects.toThrow("paymentUrl cannot be provided when generating a receipt.");
     });
   });

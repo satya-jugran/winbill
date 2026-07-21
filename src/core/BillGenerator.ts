@@ -85,9 +85,10 @@ export class BillGenerator {
     const processedData = this.billProcessor.process(validatedData);
 
     // 3. Generate QR Code if provided
-    if (processedData.qrCodeUrl) {
+    if (processedData.paymentDetails?.qrCodeUrl) {
       try {
-        processedData.qrCodeBuffer = await QRCode.toBuffer(processedData.qrCodeUrl, { errorCorrectionLevel: 'H' });
+        const buffer = await QRCode.toBuffer(processedData.paymentDetails.qrCodeUrl, { errorCorrectionLevel: 'H' });
+        processedData.paymentDetails.qrCodeBuffer = buffer;
       } catch (err) {
         console.error("Failed to generate QR Code:", err);
       }
