@@ -47,12 +47,30 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
       doc.save();
       doc.fillColor(processed.watermark.color || "#e0e0e0"); 
       doc.fillOpacity(processed.watermark.opacity ?? 0.3); 
-      doc.fontSize(120);
+      
+      let watermarkSize = 120;
+      if (processed.watermark.fontSize) {
+        const sizeMap: Record<string, number> = {
+          "xsmall": 60,
+          "small": 80,
+          "medium": 120,
+          "large": 160,
+          "xlarge": 200
+        };
+        watermarkSize = sizeMap[processed.watermark.fontSize] || 120;
+      }
+      doc.fontSize(watermarkSize);
       doc.font(fontBold);
       
-      doc.translate(300, 400); 
-      doc.rotate(-45);
-      doc.text(processed.watermark.text, -200, -50, { align: "center", width: 400 });
+      const text = processed.watermark.text;
+      const textWidth = doc.widthOfString(text);
+      const textHeight = doc.heightOfString(text);
+      
+      const centerX = doc.page.width / 2;
+      const centerY = doc.page.height / 2;
+      
+      doc.rotate(-45, { origin: [centerX, centerY] });
+      doc.text(text, centerX - textWidth / 2, centerY - textHeight / 2, { width: textWidth, align: "center" });
       
       doc.restore(); 
     }
