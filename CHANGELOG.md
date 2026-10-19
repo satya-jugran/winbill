@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-10-19
+
+### Added
+- **Command-Line Interface (CLI)**: Added official CLI entry point (`winbill` / `npx winbill`) powered by native `node:util.parseArgs` with zero external dependencies.
+- **Standalone Windows Executable (`winbill.exe`)**: Added a single-file executable build pipeline (`npm run build:exe`) via `@yao-pkg/pkg` that bundles Node.js runtime, fonts, and assets for use in non-Node environments.
+- **Automatic JSON Date Coercion**: Automatically converts ISO date strings (`date`, `dueDate`, `paymentDate`) into native JavaScript `Date` instances before schema validation, allowing raw JSON files to pass validation effortlessly.
+- **Relative Path Resolution**: Automatically resolves relative file paths for logos (`logoPath`) and custom fonts relative to the input JSON file's directory.
+- **Corporate Branding Presets**: Added `--config <path>` flag support to merge reusable branding configurations (layout, primary color, font, custom label translations, and default company details) with minimal invoice data.
+- **Complete Working Examples**: Added `invoice.json` (with logo), `branding.json` preset, and sample `logo.png` under `examples/` and root.
+- **Dry-Run Validation**: Added `--validate-only` flag to validate JSON files against the Zod schema without generating a PDF.
+- **Piping & STDIN Support**: Added support for reading JSON directly from STDIN (`cat invoice.json | winbill -o out.pdf`).
+- **Auto-Open Option**: Added `--open` flag to automatically open the generated PDF in the default operating system viewer.
+
+### Changed
+- **Optimized npm Package Size**: Excluded compiled `.exe` binaries from npm tarball via `.npmignore`, reducing package size from 23.1 MB to ~567 KB.
+- **Font Resolution Hardening**: Hardened font lookup paths across `DefaultLayout` and `ModernLayout` to reliably resolve assets in development, production npm package, and packaged virtual snapshot environments.
+
 ## [2.1.1] - 2026-07-21
 
 ### Added

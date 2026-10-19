@@ -1,7 +1,7 @@
 import { parseArgs } from "node:util";
 import { CliFlags } from "./loader";
 
-export const VERSION = "2.1.1";
+export const VERSION = "2.2.0";
 
 export const HELP_TEXT = `
 winbill v${VERSION}
