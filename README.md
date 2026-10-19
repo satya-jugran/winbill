@@ -108,6 +108,43 @@ async function run() {
 run();
 ```
 
+## CLI & Standalone Executable
+
+`winbill` can be run directly from the command line or built into a standalone zero-dependency Windows executable (`winbill.exe`).
+
+### Running via CLI (Node.js)
+```bash
+# Direct generation
+node dist/cli.js -i invoice.json -o invoice.pdf
+
+# With layout & watermark options
+node dist/cli.js -i invoice.json --layout MODERN --color "#2563EB" --watermark "PAID"
+
+# Receipt mode
+node dist/cli.js -i receipt.json --receipt --payment-method "Stripe" -o receipt.pdf
+
+# Validate JSON schema without generating PDF
+node dist/cli.js -i invoice.json --validate-only
+```
+
+### Standalone Executable (`winbill.exe`)
+Build the single-file Windows executable (`dist/winbill.exe`):
+```bash
+npm run build:exe
+```
+
+Run `winbill.exe` on any Windows machine (no Node.js installation required):
+```powershell
+# Basic invoice generation
+.\dist\winbill.exe -i invoice.json -o invoice.pdf
+
+# With corporate branding preset config and custom flags
+.\dist\winbill.exe -i invoice.json -c branding.json --layout MODERN --watermark "PAID"
+
+# STDIN piping support
+type invoice.json | .\dist\winbill.exe -o streamed.pdf
+```
+
 ## API Reference
 
 ### `Winbill` Class Methods

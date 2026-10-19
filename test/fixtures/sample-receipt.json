@@ -1,0 +1,34 @@
+{
+  "companyName": "Acme Dynamics Ltd.",
+  "companyAddress": [
+    "123 Innovation Boulevard",
+    "Tech Park, Suite 400",
+    "San Francisco, CA 94105"
+  ],
+  "clientName": "Wayne Enterprises",
+  "clientAddress": [
+    "1007 Mountain Drive",
+    "Gotham City, NJ 07001"
+  ],
+  "invoiceNumber": "REC-2026-0042",
+  "date": "2026-09-06T08:00:00.000Z",
+  "currency": "USD",
+  "locale": "en-US",
+  "receipt": {
+    "paymentDate": "2026-09-06T08:15:00.000Z",
+    "paymentMethod": "Credit Card ending in 4242 (Stripe)"
+  },
+  "watermark": {
+    "text": "PAID",
+    "color": "#10B981",
+    "opacity": 0.25
+  },
+  "items": [
+    {
+      "description": "Monthly Subscription - Enterprise Tier",
+      "quantity": 1,
+      "unitPrice": 499.0
+    }
+  ],
+  "notes": "Thank you for your business! Your payment has been received and verified."
+}

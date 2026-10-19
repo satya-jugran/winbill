@@ -1,0 +1,47 @@
+{
+  "options": {
+    "layout": "MODERN",
+    "theme": {
+      "primaryColor": "#0F4C81",
+      "fontFamily": "Roboto",
+      "translations": {
+        "invoice": "TAX INVOICE",
+        "receipt": "OFFICIAL RECEIPT",
+        "billTo": "INVOICE TO",
+        "date": "INVOICE DATE",
+        "dueDate": "DUE DATE",
+        "invoiceNumber": "INVOICE NO.",
+        "poNumber": "P.O. REF",
+        "description": "DESCRIPTION OF SERVICES",
+        "quantity": "QTY",
+        "unitPrice": "RATE",
+        "amount": "AMOUNT",
+        "subtotal": "SUBTOTAL",
+        "tax": "TAX",
+        "discount": "DISCOUNT",
+        "total": "TOTAL DUE",
+        "notes": "CLIENT NOTES",
+        "terms": "TERMS & CONDITIONS",
+        "paymentDetails": "PAYMENT INSTRUCTIONS",
+        "bankDetails": "DIRECT WIRE / ACH TRANSFER",
+        "bankName": "BANK NAME",
+        "accountName": "ACCOUNT NAME",
+        "accountNumber": "ACCOUNT NUMBER",
+        "routingNumber": "ROUTING NUMBER",
+        "swift": "SWIFT / BIC",
+        "iban": "IBAN"
+      }
+    }
+  },
+  "data": {
+    "companyName": "Acme Innovations Inc.",
+    "companyAddress": [
+      "500 Technology Boulevard, Suite 700",
+      "Palo Alto, CA 94304",
+      "United States"
+    ],
+    "logoPath": "./logo.png",
+    "currency": "USD",
+    "locale": "en-US"
+  }
+}

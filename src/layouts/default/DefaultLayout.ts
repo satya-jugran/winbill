@@ -27,9 +27,12 @@ export class DefaultLayout implements ILayoutStrategy<{ processed: ProcessedBill
       }
     } else if (fontFamily === "Roboto") {
       const searchPaths = [
-        path.join(__dirname, "..", "assets", "fonts"), 
+        path.join(__dirname, "..", "assets", "fonts"),
+        path.join(__dirname, "..", "..", "assets", "fonts"),
         path.join(__dirname, "..", "..", "src", "assets", "fonts"),
-        path.join(process.cwd(), "src", "assets", "fonts")
+        path.join(process.cwd(), "src", "assets", "fonts"),
+        path.join(path.dirname(process.execPath), "assets", "fonts"),
+        path.join(path.dirname(process.execPath), "dist", "assets", "fonts")
       ];
       
       const foundPath = searchPaths.find(p => fs.existsSync(path.join(p, "Roboto-Regular.ttf")));

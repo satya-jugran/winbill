@@ -1,0 +1,78 @@
+{
+  "companyName": "Acme Innovations Inc.",
+  "companyAddress": [
+    "500 Technology Boulevard, Suite 700",
+    "Palo Alto, CA 94304",
+    "United States"
+  ],
+  "clientName": "Globex International Corp.",
+  "clientAddress": [
+    "742 Evergreen Terrace, Tower B",
+    "Springfield, OR 97477",
+    "United States"
+  ],
+  "invoiceNumber": "INV-2026-0142",
+  "purchaseOrderNumber": "PO-982310",
+  "date": "2026-09-06T08:00:00.000Z",
+  "dueDate": "2026-10-06T08:00:00.000Z",
+  "currency": "USD",
+  "locale": "en-US",
+  "logoPath": "./logo.png",
+  "taxes": [
+    {
+      "name": "State Sales Tax (8.25%)",
+      "rate": 0.0825
+    }
+  ],
+  "discounts": [
+    {
+      "sequenceNumber": 1,
+      "isPercent": false,
+      "value": 250,
+      "description": "Enterprise Client Credit"
+    },
+    {
+      "sequenceNumber": 2,
+      "isPercent": true,
+      "value": 5,
+      "description": "Early Bird Partner Discount (5%)"
+    }
+  ],
+  "items": [
+    {
+      "description": "Custom Cloud Architecture & Microservices Implementation",
+      "quantity": 35,
+      "unitPrice": 160.0
+    },
+    {
+      "description": "Production Infrastructure Deployment & Kubernetes Setup",
+      "quantity": 1,
+      "unitPrice": 2400.0
+    },
+    {
+      "description": "Enterprise Security & Penetration Testing Audit",
+      "quantity": 1,
+      "unitPrice": 1250.0
+    },
+    {
+      "description": "SSL Wildcard Certificates & DNS Routing (Tax Exempt)",
+      "quantity": 2,
+      "unitPrice": 150.0,
+      "isTaxExempt": true
+    }
+  ],
+  "paymentDetails": {
+    "paymentUrl": "https://pay.acme.example.com/invoice/INV-2026-0142",
+    "qrCodeUrl": "https://pay.acme.example.com/invoice/INV-2026-0142",
+    "bankDetails": {
+      "bankName": "Silicon Valley Commercial Bank",
+      "accountName": "Acme Innovations Treasury",
+      "accountNumber": "987654321098",
+      "routingNumber": "121000358",
+      "swift": "SVCBUS33",
+      "iban": "US64SVCB121000358987654321098"
+    }
+  },
+  "notes": "Thank you for partnering with Acme Innovations! For any questions regarding this invoice, please reach out to billing@acme.example.com.",
+  "termsAndConditions": "1. Invoices are payable within 30 days of the invoice date.\n2. Overdue balances are subject to a late charge of 1.5% per month.\n3. All deliverables and source materials remain property of Acme Innovations until payment in full is received."
+}

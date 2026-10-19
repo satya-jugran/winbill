@@ -6,3 +6,5 @@ implementation_plan.md
 task.md
 .DS_Store
 .gitignore
+*.exe
+dist/*.exe

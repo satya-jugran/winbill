@@ -1,0 +1,63 @@
+{
+  "companyName": "Acme Dynamics Ltd.",
+  "companyAddress": [
+    "123 Innovation Boulevard",
+    "Tech Park, Suite 400",
+    "San Francisco, CA 94105"
+  ],
+  "clientName": "Wayne Enterprises",
+  "clientAddress": [
+    "1007 Mountain Drive",
+    "Gotham City, NJ 07001"
+  ],
+  "invoiceNumber": "INV-2026-0042",
+  "purchaseOrderNumber": "PO-998811",
+  "date": "2026-09-06T08:00:00.000Z",
+  "dueDate": "2026-10-06T08:00:00.000Z",
+  "currency": "USD",
+  "locale": "en-US",
+  "taxes": [
+    {
+      "name": "State Sales Tax",
+      "rate": 0.0825
+    }
+  ],
+  "discounts": [
+    {
+      "sequenceNumber": 1,
+      "isPercent": false,
+      "value": 150,
+      "description": "Enterprise Partnership Discount"
+    }
+  ],
+  "items": [
+    {
+      "description": "Cloud Architecture Consultation",
+      "quantity": 25,
+      "unitPrice": 180.0
+    },
+    {
+      "description": "Dedicated Infrastructure Deployment",
+      "quantity": 1,
+      "unitPrice": 2500.0
+    },
+    {
+      "description": "SSL Certificate & Domain Setup",
+      "quantity": 2,
+      "unitPrice": 125.0,
+      "isTaxExempt": true
+    }
+  ],
+  "notes": "Thank you for partnering with Acme Dynamics. Payment is appreciated within 30 days.",
+  "termsAndConditions": "1. All invoices are due Net 30.\n2. Late payments are subject to a 1.5% monthly finance charge.",
+  "paymentDetails": {
+    "paymentUrl": "https://example.com/pay/inv-0042",
+    "qrCodeUrl": "https://example.com/pay/inv-0042",
+    "bankDetails": {
+      "bankName": "Silicon Valley Trust Bank",
+      "accountName": "Acme Dynamics Operations",
+      "accountNumber": "987654321098",
+      "routingNumber": "121000358"
+    }
+  }
+}

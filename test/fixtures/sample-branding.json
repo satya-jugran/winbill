@@ -1,0 +1,9 @@
+{
+  "options": {
+    "layout": "MODERN",
+    "theme": {
+      "primaryColor": "#1E3A8A",
+      "fontFamily": "Roboto"
+    }
+  }
+}
